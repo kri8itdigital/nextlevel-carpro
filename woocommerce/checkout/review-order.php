@@ -16,6 +16,14 @@
  */
 
 defined( 'ABSPATH' ) || exit;
+
+$_PAYMENT_TYPES = array();
+
+if(get_field('enable_payment_type', 'option')):
+	$_PAYMENT_TYPES = get_field('payment_types', 'option');
+	$_PAYMENT_TYPES = array_column($_PAYMENT_TYPES, 'label');
+endif;
+
 ?>
 <div class="woocommerce-checkout-review-order-table">
 	<div class="orderReviewProduct">
@@ -62,7 +70,7 @@ defined( 'ABSPATH' ) || exit;
 		</div>
 			
 		<?php foreach ( WC()->cart->get_fees() as $fee ) : ?>
-			<?php if(!stristr($fee->name, 'deposit')): ?>
+			<?php if(!in_array($fee->name, $_PAYMENT_TYPES)): ?>
 				<div class="row no-gutters fee fee-<?php echo sanitize_title($fee->name); ?>">
 					<div class="col-12 col-sm-6"><strong><?php echo esc_html( $fee->name ); ?></strong>:</div>
 					<div class="col-12 col-sm-6"><?php wc_cart_totals_fee_html( $fee ); ?></div>

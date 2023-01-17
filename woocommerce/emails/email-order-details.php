@@ -108,7 +108,7 @@ do_action( 'woocommerce_email_before_order_table', $order, $sent_to_admin, $plai
 					?>
 
 					<tr>
-						<th class="td" scope="row" colspan="2" style="text-align:<?php echo esc_attr( $text_align ); ?>; <?php echo ( 1 === $i ) ? 'border-top-width: 4px;' : ''; ?>"><?php echo wp_kses_post( 'Deposit ('.$_DEPOSIT_PERCENTAGE.'):' ); ?></th>
+						<th class="td" scope="row" colspan="2" style="text-align:<?php echo esc_attr( $text_align ); ?>; <?php echo ( 1 === $i ) ? 'border-top-width: 4px;' : ''; ?>"><?php echo wp_kses_post( 'Amount Paid:' ); ?></th>
 						<td class="td" style="text-align:<?php echo esc_attr( $text_align ); ?>; <?php echo ( 1 === $i ) ? 'border-top-width: 4px;' : ''; ?>"><?php echo wp_kses_post( wc_price($_AMOUNT_PAID) ); ?></td>
 					</tr>
 

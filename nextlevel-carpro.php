@@ -16,7 +16,7 @@
  * Plugin Name:       NEXTLEVEL Carpro
  * Plugin URI:        https://nextlevel.thrifty.co.za
  * Description:       Syncs and connects to the NEXTLEVEL hub and CARPRO
- * Version:           1.0.0
+ * Version:           1.0.1
  * Author:            Hilton Moore
  * Author URI:        https://www.kri8it.com
  * License:           GPL-2.0+
@@ -35,7 +35,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'NEXTLEVEL_CARPRO_VERSION', '1.0.0' );
+define( 'NEXTLEVEL_CARPRO_VERSION', '1.0.1' );
 
 /**
  * The code that runs during plugin activation.
@@ -89,7 +89,7 @@ function check_for_update_carpro(){
             'requires'           => '5.0',
             'tested'             => '5.7',
             'readme'             => 'README.md',
-            'version'            => '1.0.0'
+            'version'            => '1.0.1'
         );
 
         new Nextlevel_Carpro_Updater( $config );

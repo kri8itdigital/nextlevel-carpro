@@ -824,8 +824,7 @@ class CARPRO{
 				array(
 					'post_title' => $_DATA['title'],
 					'post_type' => $_TYPE,
-					'post_status' => $_DATA['status'],
-					'post_content' => $_DATA['content']
+					'post_status' => $_DATA['status']
 				)
 			);
 
@@ -869,12 +868,6 @@ class CARPRO{
 			if($_THE_ITEM->post_title != $_DATA['title']):
 
 				$_POST_UPDATE['post_title'] = $_DATA['title'];
-
-			endif;
-
-			if($_THE_ITEM->post_content != $_DATA['content']):
-
-				$_POST_UPDATE['post_content'] = $_DATA['content'];
 
 			endif;
 
