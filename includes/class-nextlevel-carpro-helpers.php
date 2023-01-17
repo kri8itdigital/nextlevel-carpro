@@ -202,7 +202,7 @@ class CARPRO_HELPERS{
 			return $_VEHICLES;
 		endif;
 
-		return $_AVAILABLE;
+		return false;
 
 
 		
@@ -414,10 +414,14 @@ class CARPRO_HELPERS{
 
 		$_TEXT = array();
 
+		$_POST_ITEM = false;
+
 		if(WC()->session->get('carpro_availability')):
 			foreach(WC()->session->get('carpro_availability') as $_CODE => $_DATA):
 
 				if(trim($_SKU) == trim($_CODE)):
+
+					$_POST_ITEM     = $_DATA['post'];
 
 					$_EXTRAS_ONCE 	= $_DATA['vehicle']['extras']['once'];
 					$_EXTRAS_DAILY 	= $_DATA['vehicle']['extras']['daily'];
@@ -461,7 +465,9 @@ class CARPRO_HELPERS{
 			endforeach;
 		endif;
 
-		if(get_field('vehicle_text', 'option')):
+		if(get_field('custom_includesexcludes',$_POST_ITEM)):
+			$_TEXT[] = get_field('custom_includesexcludes', $_POST_ITEM);
+		elseif(get_field('vehicle_text', 'option')):
 			$_TEXT[] = get_field('vehicle_text', 'option');
 		endif;
 

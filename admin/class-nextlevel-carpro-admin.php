@@ -806,7 +806,7 @@ class Nextlevel_Carpro_Admin {
 
 			//VEHICLES
 			//CHANGE THE POST TYPE TO 'product'
-						if( function_exists('acf_add_local_field_group') ):
+			if( function_exists('acf_add_local_field_group') ):
 
 acf_add_local_field_group(array(
 	'key' => 'group_5ea9586e7b388',
@@ -1044,6 +1044,26 @@ acf_add_local_field_group(array(
 			'append' => '',
 			'maxlength' => '',
 		),
+		array(
+			'key' => 'field_63c6a02aa84fd',
+			'label' => 'Custom Includes/Excludes',
+			'name' => 'custom_includesexcludes',
+			'aria-label' => '',
+			'type' => 'text',
+			'instructions' => 'Contract Fee text will still be added automatically so that the fee can stay updated automatically.',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'maxlength' => '',
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+		),
 	),
 	'location' => array(
 		array(
@@ -1065,7 +1085,7 @@ acf_add_local_field_group(array(
 	'show_in_rest' => 0,
 ));
 
-endif;		
+endif;			
 
 
 
