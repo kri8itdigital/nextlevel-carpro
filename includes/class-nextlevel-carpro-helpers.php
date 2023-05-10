@@ -81,12 +81,16 @@ class CARPRO_HELPERS{
 
 
 
-	/* GET ORDER TOTAL */
-	public static function IS_SEARCH_RESULTS(){
+	/* SEARCH RESULTS PAGE */
+	public static function IS_SEARCH_RESULTS($_OBJECT_ID = false){
 
 		$_SEARCH = get_field('search_results_page', 'option');
 
-		$_QUERY = get_queried_object();
+		if($_OBJECT_ID):
+			$_QUERY = get_post($_OBJECT_ID);
+		else:
+			$_QUERY = get_queried_object();
+		endif;
 
 		if($_QUERY->post_type == 'page'):
 
@@ -296,6 +300,7 @@ class CARPRO_HELPERS{
 		$_DO_HOUR_LIMIT = false;
 
 		$_LIMIT_NOW = false;
+		$_DATE = date('Y-m-d', strtotime($_DATE));
 
 		if($_DATE == date('Y-m-d')):
 			$_DO_HOUR_LIMIT = true;
@@ -774,6 +779,43 @@ class CARPRO_HELPERS{
 
 
 		return $_SELECTED;
+
+	}
+
+
+
+
+
+
+
+
+
+
+	public static function CUSTOM_BRANCH_SORT(){
+
+		$_PICKUP_BRANCH = WC()->session->get('carpro_out_branch');
+
+		$_THE_BRANCH = self::GET_BRANCH_FROM_CODE($_PICKUP_BRANCH);
+
+		$_LIMITATIONS = get_field('branch_ordering', 'option');
+
+		if(is_array($_LIMITATIONS) && count($_LIMITATIONS) > 0):
+
+			foreach($_LIMITATIONS as $_LIMIT):
+
+				if(in_array($_THE_BRANCH->ID, $_LIMIT['branch'])):
+
+					return $_LIMIT['ordering'];
+
+				endif;
+
+			endforeach;
+
+		endif;
+
+
+		return false;
+
 
 	}
 

@@ -135,8 +135,7 @@ class Nextlevel_Carpro_Public {
 
     	wp_enqueue_style('select2/css', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css');
     	
-
-
+    	
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/nextlevel-carpro-public.js', array( 'jquery', 'jquery/datepicker/js', 'confirm/js', $_REQUIREMENT, 'google/html', 'select2/js', 'telephone/js' ), $this->version, false );
 
 		if(get_option('WPLANG') == ''):
@@ -159,7 +158,8 @@ class Nextlevel_Carpro_Public {
 			'booking_session_text' 		=> get_field('booking_session_expired_text','option'),
 			'booking_session_button' 	=> get_field('booking_session_button_text','option'),
 			'booking_session_link' 		=> get_field('booking_session_button_link','option'),
-			'booking_session_time' 		=> (int)get_field('booking_session_homepage_timeout','option')*1000
+			'booking_session_time' 		=> (int)get_field('booking_session_homepage_timeout','option')*1000,
+			'utility_queried_object_id' => get_queried_object_id()
 		);
 
 		if(get_field('enable_timer', 'option')):
@@ -168,39 +168,14 @@ class Nextlevel_Carpro_Public {
 			$_ARRAY_OF_ARGS['enable_timer'] = 'no';
 		endif;
 
+		if(get_field('timer_length', 'option')):
+			$_ARRAY_OF_ARGS['booking_timer_minutes'] = (int)get_field('timer_length', 'option');
+		else:
+			$_ARRAY_OF_ARGS['booking_timer_minutes'] = 0;
+		endif;
+
 		if(isset(WC()->session)):
-			if(WC()->session->get('carpro_search_start')):
-
-				if($_ARRAY_OF_ARGS['enable_timer'] == 'yes'):
-
-					if(get_field('timer_length', 'option')):
-						$_MINUTES = (int)get_field('timer_length', 'option');
-					else:
-						$_MINUTES = 0;
-					endif;
-
-					$_SEARCH_ST = WC()->session->get('carpro_search_start');
-					$_SEARCH_ET = date('Y-m-d H:i:s', strtotime("+".$_MINUTES." minutes", strtotime($_SEARCH_ST)));
-					
-					
-					if((int)strtotime($_SEARCH_ET) >=(int)strtotime(wp_date('Y-m-d H:i:s'))):
-
-						$_ARRAY_OF_ARGS['search_now_dt']    = strtotime(wp_date('Y-m-d H:i:s'));
-						$_ARRAY_OF_ARGS['search_start_dt']	= $_SEARCH_ST;
-						$_ARRAY_OF_ARGS['search_start_num'] = strtotime($_SEARCH_ST);
-						$_ARRAY_OF_ARGS['search_end_dt']	= $_SEARCH_ET;
-						$_ARRAY_OF_ARGS['search_end_num'] 	= strtotime($_SEARCH_ET);
-
-					else:
-
-						CARPRO_HELPERS::CLEAR_CARPRO();
-						$_ARRAY_OF_ARGS['clear_search'] = 'yes';
-
-					endif;
-
-				endif;
-			endif;
-
+			
 			if(CARPRO_HELPERS::IS_SEARCH_RESULTS()):
 				$_ARRAY_OF_ARGS['is_search'] = 'yes';
 
@@ -231,8 +206,7 @@ class Nextlevel_Carpro_Public {
 				endif;
 
 			endif;
-		else:
-			$_ARRAY_OF_ARGS['clear_search'] = 'yes';
+			
 		endif;
 
 
@@ -477,7 +451,7 @@ class Nextlevel_Carpro_Public {
 		?>
 		<div id="carpro_search_form_container">
 				
-			<form id="carpro_search_form">
+			<form id="carpro_search_form" autocomplete="off">
 				
 				<div class="container-fluid">
 
@@ -519,7 +493,7 @@ class Nextlevel_Carpro_Public {
 
 									<div id="SEARCHFORMLOCATIONCHECKBOX" class="active">
 										<div class="location_change_box">
-											<input id="carpro_different_location" type="checkbox" checked="checked" name="carpro_different_location" />
+											<input id="carpro_different_location" type="checkbox" checked="checked" name="carpro_different_location" autocomplete="off" />
 											<label id="SEARCHFORMOPENBOX" class="location_label">Return At Pick-up location</label>
 										</div>
 									</div>
@@ -531,7 +505,7 @@ class Nextlevel_Carpro_Public {
 						<div class="col-xl-3 col-md-6 lg-m-top md-m-top">
 							<div><label>Pick-up Date</label></div>
 							<div class="row">
-							<div class="col-6"><input type="text" name="OutDate" id="carproOutDate" /></div>
+							<div class="col-6"><input type="text" name="OutDate" id="carproOutDate"autocomplete="off" /></div>
 							<div class="col-6"><select data-minimum-results-for-search="Infinity" name="OutTime" id="carproOutTime"></select></div>
 							</div>
 						</div>
@@ -539,7 +513,7 @@ class Nextlevel_Carpro_Public {
 						<div class="col-xl-3 col-md-6 lg-m-top md-m-top">
 							<div><label>Drop-off Date</label></div>
 							<div class="row">
-							<div class="col-6"><input type="text" name="InDate" id="carproInDate" /></div>
+							<div class="col-6"><input type="text" name="InDate" id="carproInDate"autocomplete="off" /></div>
 							<div class="col-6"><select data-minimum-results-for-search="Infinity" name="InTime" id="carproInTime"></select></div>
 							</div>
 						</div>
@@ -584,23 +558,31 @@ class Nextlevel_Carpro_Public {
 		ob_start();
 
 		if(isset(WC()->session) && WC()->session->get('carpro_includes') && count(WC()->session->get('carpro_includes')) > 0):
-
-			$_PRODUCTS = get_posts(
-				array(
-					'post_type' => 'product',
-					'posts_per_page' => '-1',
-					'meta_query' => array(
-						'relation' => 'AND',
-						array(
-							'key' => 'vehicle_code',
-							'value' => WC()->session->get('carpro_includes'),
-							'compare' => 'IN'
-						)
-					),
-					'orderby' => 'menu_order',
-					'order' => 'ASC'
-				)
+			$_PRODUCT_ARGS = array(
+				'post_type' => 'product',
+				'posts_per_page' => '-1',
+				'meta_query' => array(
+					'relation' => 'AND',
+					array(
+						'key' => 'vehicle_code',
+						'value' => WC()->session->get('carpro_includes'),
+						'compare' => 'IN'
+					)
+				),
+				'orderby' => 'menu_order',
+				'order' => 'ASC'
 			);
+
+
+			$_CUSTOM_BRANCH_SORT = CARPRO_HELPERS::CUSTOM_BRANCH_SORT();
+
+			if(is_array($_CUSTOM_BRANCH_SORT) && count($_CUSTOM_BRANCH_SORT) > 0):
+				$_PRODUCT_ARGS['post__in'] = $_CUSTOM_BRANCH_SORT;
+				$_PRODUCT_ARGS['orderby'] = 'post__in';
+				unset($_PRODUCT_ARGS['order']);			
+			endif;
+
+			$_PRODUCTS = get_posts($_PRODUCT_ARGS);
 
 			if(count($_PRODUCTS) > 0):
 
@@ -1097,10 +1079,6 @@ class Nextlevel_Carpro_Public {
 
 	/* ADD EXTRAS AND NOTES AT END OF CHECKOUT */
 	public function carpro_extra_detail_fields($_CHECKOUT){
-
-		$_CART_ITEMS = WC()->cart->get_cart();
-		$_FIRST = reset($_CART_ITEMS);
-		$_SKU = $_FIRST['data']->get_sku();
 
 
 		echo '<div class="mobilecheckoutblock"  id="checkout_express"><h3>' . __('For an express collection, please complete below') . '</h2>';
@@ -1917,6 +1895,15 @@ class Nextlevel_Carpro_Public {
 	/* CHECKOUT ADD FIELDS */
 	public function woocommerce_checkout_fields($_FIELDS){
 
+		$_FIELDS['billing']['billing_identification_type'] = array(
+		    'label'     => __('Identification Type', 'woocommerce'),
+		    'type'		=> 'select',
+		    'required'  => true,
+		    'class'     => array('form-row-wide', 'billing_id_number'),
+		    'clear'     => true,
+		    'priority'  => 25,
+		    'options'   => array('id' => "ID Number", 'passport' => 'Passport Number')
+		);
 
 		$_FIELDS['billing']['billing_id_passport'] = array(
 		    'label'     => __('ID/Passport Number', 'woocommerce'),
@@ -1924,7 +1911,7 @@ class Nextlevel_Carpro_Public {
 		    'required'  => true,
 		    'class'     => array('form-row-wide', 'billing_id_number'),
 		    'clear'     => true,
-		    'priority'  => 25
+		    'priority'  => 26
 		);
 
 

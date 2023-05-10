@@ -294,6 +294,7 @@ class Nextlevel_Carpro {
 
 
 		$this->loader->add_filter('woocommerce_order_item_permalink', $plugin_public, 'woocommerce_order_item_permalink', 999, 3);
+
 	}
 
 	/**
