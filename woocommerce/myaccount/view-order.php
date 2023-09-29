@@ -25,7 +25,7 @@ $notes = $order->get_customer_order_notes();
 <?php
 printf(
 	/* translators: 1: order number 2: order date 3: order status */
-	esc_html__( 'Booking #%1$s was placed on %2$s', 'woocommerce' ),
+	esc_html__( 'Rental #%1$s was placed on %2$s', 'woocommerce' ),
 	'<mark class="order-number">' . $order->get_order_number() . '</mark>', // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	'<mark class="order-date">' . wc_format_datetime( $order->get_date_created() ) . '</mark>'
 );
@@ -33,7 +33,7 @@ printf(
 </p>
 
 <?php if ( $notes ) : ?>
-	<h2><?php esc_html_e( 'Booking updates', 'woocommerce' ); ?></h2>
+	<h2><?php esc_html_e( 'Rental updates', 'woocommerce' ); ?></h2>
 	<ol class="woocommerce-OrderUpdates commentlist notes">
 		<?php foreach ( $notes as $note ) : ?>
 		<li class="woocommerce-OrderUpdate comment note">

@@ -83,7 +83,7 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 
 						<div class="col2-set mobilecheckoutblock" id="customer_details">
 							<div class="col-1">
-								<?php do_action( 'woocommerce_checkout_billing' ); ?>
+								<?php do_action( 'woocommerce_checkout_billing' ); ?>								
 							</div>
 						</div>
 
@@ -116,7 +116,7 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 				<div class="checkoutReview">
 				<?php do_action( 'woocommerce_checkout_before_order_review_heading' ); ?>
 
-				<div class="checkoutHeading"><h3>YOUR ORDER</h3></div>
+				<div class="checkoutHeading"><h3>YOUR RENTAL</h3></div>
 				
 				<?php do_action( 'woocommerce_checkout_before_order_review' ); ?>
 

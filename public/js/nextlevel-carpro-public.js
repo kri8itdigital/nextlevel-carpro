@@ -1,6 +1,5 @@
 (function( $ ) {
-	//'use strict';
-
+  //'use strict';
 
 
 var map;
@@ -290,7 +289,7 @@ function nl_utility_set_timer_session_storage(){
         var $_VALID = true;
         if($('.checkoutTab.ACTIVE .validate-required').length){
 
-          $('.checkoutTab.ACTIVE .validate-required').each(function(){
+          $('.checkoutTab.ACTIVE .validate-required:visible').each(function(){
 
               if(jQuery(this).find('input').length){
 
@@ -304,7 +303,7 @@ function nl_utility_set_timer_session_storage(){
               }
 
 
-              if(jQuery(this).find('select').length){
+              if(jQuery(this).find('select:visible').length){
                 
                  if(!jQuery(this).find('select').val() || jQuery(this).find('select').val() == ''){
                   $_VALID = false;
@@ -402,7 +401,12 @@ function nl_utility_set_timer_session_storage(){
       });
 
       if($('.checkoutTabLink').length){
-        $('.FIRSTCHECKOUTAB').trigger('click');
+
+        if(getUrlParameter('checkout_action') && getUrlParameter('checkout_action') == 'pay'){
+          $('#checkoutNavPayment').trigger('click');
+        }else{
+          $('.FIRSTCHECKOUTAB').trigger('click');
+        }
       }
 
 
@@ -483,8 +487,6 @@ function nl_utility_set_timer_session_storage(){
 
       if(carpro_params.is_search == 'yes'){
       
-
-
         if(carpro_params.search_carpro_out_branch && carpro_params.search_carpro_in_branch){
 
 
@@ -497,15 +499,18 @@ function nl_utility_set_timer_session_storage(){
         if(carpro_params.search_carpro_out_date && carpro_params.search_carpro_out_date != ''){
           var $PICKDATE = new Date(carpro_params.search_carpro_out_date);
           $('#carproOutDate').datepicker('setDate', $PICKDATE).trigger('onSelect');
+        }else{
+          $('#carproOutDate').datepicker('setDate', parseInt(carpro_params.booking_default));
         }
 
         if(carpro_params.search_carpro_in_date && carpro_params.search_carpro_in_date != ''){
           var $DROPDATE = new Date(carpro_params.search_carpro_in_date);          
           $('#carproInDate').datepicker('setDate', $DROPDATE).trigger('onSelect');
+        }else{
+          $('#carproInDate').datepicker('setDate', parseInt(carpro_params.booking_default) + parseInt(carpro_params.booking_minimum));
         }
 
       }else{
-
         $('#carproOutDate').datepicker('setDate', parseInt(carpro_params.booking_default));
         $('#carproInDate').datepicker('setDate', parseInt(carpro_params.booking_default) + parseInt(carpro_params.booking_minimum));
 
@@ -531,6 +536,24 @@ function nl_utility_set_timer_session_storage(){
       /* SET TIMER IF A SEARCH HAS HAPPENED */
       if(carpro_params.enable_timer == 'yes'){
        $_TIMER = setInterval(carproOrderTimeout, 1000);
+      }
+
+
+      if($('.carpro-payment-type-radio').length){
+
+        $('.carpro-payment-type-radio').find('input').each(function(){
+
+          $(this).wrap( "<div class='carpro-payment-type-radio-item col-12 col-md-6'></div>")
+
+        });
+
+        $('.carpro-payment-type-radio').find('label').each(function(){
+          $(this).insertAfter($(this).prev().find('input'));
+        });
+
+
+        $('.carpro-payment-type-radio-item').wrapAll('<div class="row g-0"></div>');
+
       }
 
 
@@ -564,9 +587,9 @@ function nl_utility_set_timer_session_storage(){
 
               setTimeout(
                 function(){
-                  $('#SEARCHFORMLOCATIONDROPOFF').switchClass('col-xl-6', 'col-xl-4'); 
+                  $('#SEARCHFORMLOCATIONDROPOFF').switchClass('col-xl-6', 'col-xl-5'); 
                   setTimeout(function(){
-                    $('#SEARCHFORMLOCATIONCONTAINER').switchClass('col-xl-6', 'col-xl-8');
+                    $('#SEARCHFORMLOCATIONCONTAINER').switchClass('col-xl-6', 'col-xl-7');
                   }, 250);
                 }, 
                 250
@@ -587,10 +610,10 @@ function nl_utility_set_timer_session_storage(){
 
               setTimeout(
                 function(){
-                  $('#SEARCHFORMLOCATIONCONTAINER').switchClass('col-xl-8', 'col-xl-6');
+                  $('#SEARCHFORMLOCATIONCONTAINER').switchClass('col-xl-7', 'col-xl-6');
 
                   setTimeout(function(){
-                    $('#SEARCHFORMLOCATIONDROPOFF').switchClass('col-xl-4', 'col-xl-6');
+                    $('#SEARCHFORMLOCATIONDROPOFF').switchClass('col-xl-5', 'col-xl-6');
                   }, 250);
                 }, 
                 250
@@ -621,7 +644,7 @@ function nl_utility_set_timer_session_storage(){
           formatOnDisplay: true,
           separateDialCode: true,
           utilsScript: carpro_params.telephoneutil,
-          initialCountry: 'za',
+          initialCountry: carpro_params.telephoneinitial,
           hiddenInput: 'phone_number_full'
         });
       }
@@ -685,7 +708,8 @@ function nl_utility_set_timer_session_storage(){
 
           var ajax_data = {
             action: 'carpro_ajax_do_search',
-            data: $('#carpro_search_form').serialize()
+            data: $('#carpro_search_form').serialize(),
+            user_id: carpro_params.logged_in_user_id
           };
 
           
@@ -795,11 +819,24 @@ function nl_utility_set_timer_session_storage(){
 
     
       /* PAYMENT % CHANGE: TRIGGER UPDATE */
-      $('#payment_type').on('change', function(){
 
-         $(document.body).trigger("update_checkout")
+      if($('#carpro_payment_type').length){
+        $('#carpro_payment_type').on('change', function(){
 
-      });
+           $(document.body).trigger("update_checkout")
+
+        });
+      }
+
+      if($('.carpro-payment-type-radio').length){
+
+        $('.carpro-payment-type-radio').find('input[type="radio"]').on('change', function(){
+
+           $(document.body).trigger("update_checkout")
+
+        });
+
+      }
 
 
 
@@ -912,10 +949,31 @@ function nl_utility_set_timer_session_storage(){
 
 
 
+  /* GET URL VARIABLE */
+  var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+    return false;
+};
+
+
+
+
     
   /* UPDATE BRANCH TIMES */
   function nextlevelBranchTimes($_SELECT, $_BRANCH, $_DATE){
      
+     if(jQuery('#SEARCHFORMACTION').length){
 
      var ajax_data = {
         action: 'carpro_ajax_branch_times',
@@ -955,7 +1013,7 @@ function nl_utility_set_timer_session_storage(){
       });
 
 
-
+    }
 
 
   }
@@ -970,9 +1028,12 @@ function nl_utility_set_timer_session_storage(){
     if(jQuery('body').hasClass('woocommerce-order-received') || nl_utility_check_timer_session_storage()
       ){
       clearInterval($_TIMER);
-      jQuery('#carproTimerText').html('');
-      jQuery('#topBarTimer').html('');
-      jQuery('#carproTimer').removeClass('showing');
+
+      if(jQuery('#carproTimer').length){
+        jQuery('#carproTimerText').html('');
+        jQuery('#topBarTimer').html('');
+        jQuery('#carproTimer').removeClass('showing');
+      }
 
       var ajax_data = {
         action: 'carpro_ajax_reset_search',
@@ -991,7 +1052,9 @@ function nl_utility_set_timer_session_storage(){
           nl_utility_clear_timer_session_storage();
 
           if(response != 'donothing'){
-            jQuery('#carproTimer').addClass('showing');
+            if(jQuery('#carproTimer').length){
+              jQuery('#carproTimer').addClass('showing');
+            }
             setTimeout(function(){ window.location.href = response; }, 1000);
             
           }
@@ -1021,15 +1084,19 @@ function nl_utility_set_timer_session_storage(){
 
         $_TIMETEXT = minutes+':'+seconds;
 
-        jQuery('#carproTimerText').html($_TIMETEXT);
-        jQuery('#topBarTimer').html($_TIMETEXT);
-        jQuery('#carproTimer').addClass('showing');
+        if(jQuery('#carproTimer').length){
+          jQuery('#carproTimerText').html($_TIMETEXT);
+          jQuery('#topBarTimer').html($_TIMETEXT);
+          jQuery('#carproTimer').addClass('showing');
+        }
 
 
         if((orig_minute < 0 && orig_seconds < 0) || (parseInt(orig_minute) <= 0 && parseInt(orig_seconds) <= 0) ){
 
           clearInterval($_TIMER);
-          jQuery('#carproTimer').removeClass('showing');
+          if(jQuery('#carproTimer').length){
+            jQuery('#carproTimer').removeClass('showing');
+          }
 
           var ajax_data = {
             action: 'carpro_ajax_reset_search',

@@ -42,7 +42,7 @@ if ( $show_downloads ) {
 <section class="woocommerce-order-details">
 	<?php do_action( 'woocommerce_order_details_before_order_table', $order ); ?>
 
-	<h2 class="woocommerce-order-details__title"><?php esc_html_e( 'Booking Details', 'woocommerce' ); ?></h2>
+	<h2 class="woocommerce-order-details__title"><?php esc_html_e( 'Rental Details', 'woocommerce' ); ?></h2>
 
 	<table class="woocommerce-table woocommerce-table--order-details shop_table order_details">
 
@@ -96,7 +96,7 @@ if ( $show_downloads ) {
 
 			$_ID = $order->get_id();
 			$_OO = get_post($_ID);
-			$_RENTAL_AMOUNT = get_field('rental_amount', $_OO);
+			$_RENTAL_AMOUNT = get_field('rental_amount', $_OO);			
 			$_AMOUNT_PAID = get_post_meta($_ID, '_order_total', true);
 			$_DEPOSIT_PERCENTAGE = get_field('carpro_deposit_percentage', $_OO);
 			$_DEPOSIT_AMOUNT = (float)get_field('carpro_deposit_amount', $_OO);
@@ -108,7 +108,7 @@ if ( $show_downloads ) {
 
 			
 
-			<?php if($_DEPOSIT_PERCENTAGE): ?>
+			<?php if($_DEPOSIT_PERCENTAGE && $_BALANCE > 0): ?>
 				<tr class="fee-<?php echo sanitize_title('Rental Amount'); ?>">
 					<th scope="row"><?php echo esc_html( 'Rental Amount:' ); ?></th>
 					<td><?php echo  wc_price($_RENTAL_AMOUNT ); ?></td>
@@ -123,6 +123,7 @@ if ( $show_downloads ) {
 				
 			<?php else: ?>
 				<?php $_TOTAL_TITLE = 'Rental Amount:'; ?>
+				<?php $_BALANCE = $_RENTAL_AMOUNT; ?>
 			<?php endif; ?>
 
 			<tr class="fee-<?php echo sanitize_title($_TOTAL_TITLE); ?>">

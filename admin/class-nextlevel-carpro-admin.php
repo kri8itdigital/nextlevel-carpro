@@ -122,6 +122,7 @@ class Nextlevel_Carpro_Admin {
 
 		endif;
 
+
 		return $_QUERY;
 
 	}
@@ -138,30 +139,21 @@ class Nextlevel_Carpro_Admin {
 	/* HEADER FUNCTIONS */
 	public function wp_head(){
 
-		$_GTM = get_field('datalayer', 'option');
+		if(get_field('enable_dataLayer', 'option')):
 
-		if($_GTM):
+			$_GTM = get_field('datalayer', 'option');
 
-			if(!get_field('enable_dataLayer', 'option')):
+			if($_GTM):
+
 				?>
-					<!--
-				<?php
-			endif;
 
-			?>
+				<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+	'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','<?php echo $_GTM; ?>');</script>
 
-			<script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $_GTM; ?>"></script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '<?php echo $_GTM; ?>'); </script>
-
-			<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<?php echo $_GTM; ?>"
-			height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+				<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<?php echo $_GTM; ?>"
+				height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 			<?php
-
-
-			if(!get_field('enable_dataLayer', 'option')):
-				?>
-					-->
-				<?php
 			endif;
 
 		endif;
@@ -206,6 +198,49 @@ class Nextlevel_Carpro_Admin {
 	/* HTTP TIMEOUT */
 	public function http_request_timeout(){
 		return 6000;
+	}
+
+
+
+
+
+
+
+
+
+	/* SESSION EXPIRING */
+	public function wc_session_expiring($_TIME){
+		return 60*59;
+	}
+
+
+
+
+
+
+
+
+
+	/* SESSION EXPIRE */
+	public function wc_session_expiration($_TIME){
+
+		return 60*60;
+
+	}
+
+
+
+
+
+
+
+
+
+	/* OVERRIDE CART PAGE */
+	public function woocommerce_get_cart_url($_URL){
+
+		return get_field('search_results_page', 'option');
+
 	}
 
 
@@ -1088,1687 +1123,1912 @@ acf_add_local_field_group(array(
 
 
 acf_add_local_field_group( array(
-		'key' => 'group_6177efe08ec88',
-		'title' => 'CARPRO Settings',
-		'fields' => array(
-			array(
-				'key' => 'field_61828fdc144f1',
-				'label' => 'General',
-				'name' => '',
-				'aria-label' => '',
-				'type' => 'tab',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'placement' => 'top',
-				'endpoint' => 0,
+	'key' => 'group_6177efe08ec88',
+	'title' => 'CARPRO Settings',
+	'fields' => array(
+		array(
+			'key' => 'field_61828fdc144f1',
+			'label' => 'General',
+			'name' => '',
+			'aria-label' => '',
+			'type' => 'tab',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
 			),
-			array(
-				'key' => 'field_6177eff3e88b9',
-				'label' => 'CARPRO NEXTLEVEL URL',
-				'name' => 'carpro_nextlevel_url',
-				'aria-label' => '',
-				'type' => 'text',
-				'instructions' => '',
-				'required' => 1,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => '',
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-				'maxlength' => '',
-			),
-			array(
-				'key' => 'field_6177effde88ba',
-				'label' => 'CARPRO NEXTLEVEL KEY',
-				'name' => 'carpro_nextlevel_key',
-				'aria-label' => '',
-				'type' => 'text',
-				'instructions' => '',
-				'required' => 1,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => '',
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-				'maxlength' => '',
-			),
-			array(
-				'key' => 'field_6177f01ae88bb',
-				'label' => 'CARPRO Sync Branches',
-				'name' => 'carpro_sync_branches',
-				'aria-label' => '',
-				'type' => 'true_false',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'message' => '',
-				'default_value' => 0,
-				'ui' => 0,
-				'ui_on_text' => '',
-				'ui_off_text' => '',
-			),
-			array(
-				'key' => 'field_63c5569ff6624',
-				'label' => 'CARPRO Sync Branches - Disable Content Updates',
-				'name' => 'carpro_sync_branches_-_disable_content_updates',
-				'aria-label' => '',
-				'type' => 'true_false',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => array(
-					array(
-						array(
-							'field' => 'field_6177f01ae88bb',
-							'operator' => '==',
-							'value' => '1',
-						),
-					),
-				),
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'message' => '',
-				'default_value' => 0,
-				'ui' => 0,
-				'ui_on_text' => '',
-				'ui_off_text' => '',
-			),
-			array(
-				'key' => 'field_6177f021e88bc',
-				'label' => 'CARPRO Sync Vehicles',
-				'name' => 'carpro_sync_vehicles',
-				'aria-label' => '',
-				'type' => 'true_false',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'message' => '',
-				'default_value' => 0,
-				'ui' => 0,
-				'ui_on_text' => '',
-				'ui_off_text' => '',
-			),
-			array(
-				'key' => 'field_61b07f6655f88',
-				'label' => 'CARPRO Debug Session',
-				'name' => 'carpro_debug_session',
-				'aria-label' => '',
-				'type' => 'true_false',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'message' => '',
-				'default_value' => 0,
-				'ui' => 0,
-				'ui_on_text' => '',
-				'ui_off_text' => '',
-			),
-			array(
-				'key' => 'field_62f3a103c9ab7',
-				'label' => 'CARPRO Debug Rates',
-				'name' => 'carpro_debug_rates',
-				'aria-label' => '',
-				'type' => 'true_false',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'message' => '',
-				'default_value' => 0,
-				'ui' => 0,
-				'ui_on_text' => '',
-				'ui_off_text' => '',
-			),
-			array(
-				'key' => 'field_618d08ec5cc34',
-				'label' => 'Pages',
-				'name' => '',
-				'aria-label' => '',
-				'type' => 'tab',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'placement' => 'top',
-				'endpoint' => 0,
-			),
-			array(
-				'key' => 'field_61a9c991755a0',
-				'label' => 'Search Results Page',
-				'name' => 'search_results_page',
-				'aria-label' => '',
-				'type' => 'page_link',
-				'instructions' => '',
-				'required' => 1,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'post_type' => array(
-					0 => 'page',
-				),
-				'taxonomy' => '',
-				'allow_null' => 0,
-				'allow_archives' => 0,
-				'multiple' => 0,
-			),
-			array(
-				'key' => 'field_61a9c9847559f',
-				'label' => 'Bookings',
-				'name' => '',
-				'aria-label' => '',
-				'type' => 'tab',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'placement' => 'top',
-				'endpoint' => 0,
-			),
-			array(
-				'key' => 'field_62fb837a6d52f',
-				'label' => 'Enable Timer',
-				'name' => 'enable_timer',
-				'aria-label' => '',
-				'type' => 'true_false',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'message' => '',
-				'default_value' => 0,
-				'ui' => 0,
-				'ui_on_text' => '',
-				'ui_off_text' => '',
-			),
-			array(
-				'key' => 'field_62fb83846d530',
-				'label' => 'Timer Length',
-				'name' => 'timer_length',
-				'aria-label' => '',
-				'type' => 'number',
-				'instructions' => '',
-				'required' => 1,
-				'conditional_logic' => array(
-					array(
-						array(
-							'field' => 'field_62fb837a6d52f',
-							'operator' => '==',
-							'value' => '1',
-						),
-					),
-				),
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => 15,
-				'placeholder' => 15,
-				'prepend' => '',
-				'append' => '',
-				'min' => '',
-				'max' => '',
-				'step' => '',
-			),
-			array(
-				'key' => 'field_62fe2f0962374',
-				'label' => 'Booking Lead Hours',
-				'name' => 'booking_lead_hours',
-				'aria-label' => '',
-				'type' => 'number',
-				'instructions' => 'Hours from NOW - same day - that a booking can happen',
-				'required' => 1,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => '',
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-				'min' => 1,
-				'max' => '',
-				'step' => '',
-			),
-			array(
-				'key' => 'field_618d08f25cc35',
-				'label' => 'Booking Lead Days',
-				'name' => 'booking_lead_days',
-				'aria-label' => '',
-				'type' => 'number',
-				'instructions' => 'Days from Today that a booking can happen',
-				'required' => 1,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => '',
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-				'min' => '',
-				'max' => '',
-				'step' => '',
-			),
-			array(
-				'key' => 'field_62fe30458a18b',
-				'label' => 'Booking Default Day',
-				'name' => 'booking_default_day',
-				'aria-label' => '',
-				'type' => 'number',
-				'instructions' => 'Default Day from Lead Day.',
-				'required' => 1,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => '',
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-				'min' => '',
-				'max' => '',
-				'step' => '',
-			),
-			array(
-				'key' => 'field_618d09035cc36',
-				'label' => 'Booking Minimum Length',
-				'name' => 'booking_minimum_length',
-				'aria-label' => '',
-				'type' => 'number',
-				'instructions' => 'Minimum Length of a booking. ZERO will disable.',
-				'required' => 1,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => '',
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-				'min' => '',
-				'max' => '',
-				'step' => '',
-			),
-			array(
-				'key' => 'field_618d09105cc37',
-				'label' => 'Booking Maximum Length',
-				'name' => 'booking_maximum_length',
-				'aria-label' => '',
-				'type' => 'number',
-				'instructions' => 'Maximum Length of a booking. ZERO will disable.',
-				'required' => 1,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => '',
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-				'min' => '',
-				'max' => '',
-				'step' => '',
-			),
-			array(
-				'key' => 'field_62b1d4e625e53',
-				'label' => 'Default Branch Time',
-				'name' => 'default_branch_time',
-				'aria-label' => '',
-				'type' => 'time_picker',
-				'instructions' => '',
-				'required' => 1,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'display_format' => 'H:i',
-				'return_format' => 'H:i',
-			),
-			array(
-				'key' => 'field_62fb760da8ee3',
-				'label' => 'Checkout Text',
-				'name' => 'checkout_text',
-				'aria-label' => '',
-				'type' => 'wysiwyg',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => '',
-				'tabs' => 'all',
-				'toolbar' => 'full',
-				'media_upload' => 0,
-				'delay' => 0,
-			),
-			array(
-				'key' => 'field_62fb7472a382d',
-				'label' => 'Enable Payment Type',
-				'name' => 'enable_payment_type',
-				'aria-label' => '',
-				'type' => 'true_false',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'message' => '',
-				'default_value' => 0,
-				'ui' => 0,
-				'ui_on_text' => '',
-				'ui_off_text' => '',
-			),
-			array(
-				'key' => 'field_6371f78528f87',
-				'label' => 'Payment Types',
-				'name' => 'payment_types',
-				'aria-label' => '',
-				'type' => 'repeater',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'layout' => 'table',
-				'pagination' => 0,
-				'min' => 0,
-				'max' => 0,
-				'collapsed' => '',
-				'button_label' => 'Add Row',
-				'rows_per_page' => 20,
-				'sub_fields' => array(
-					array(
-						'key' => 'field_6371f79328f88',
-						'label' => 'Percentage',
-						'name' => 'percentage',
-						'aria-label' => '',
-						'type' => 'number',
-						'instructions' => '',
-						'required' => 1,
-						'conditional_logic' => 0,
-						'wrapper' => array(
-							'width' => '',
-							'class' => '',
-							'id' => '',
-						),
-						'default_value' => '',
-						'min' => '',
-						'max' => '',
-						'placeholder' => '',
-						'step' => '',
-						'prepend' => '',
-						'append' => '',
-						'parent_repeater' => 'field_6371f78528f87',
-					),
-					array(
-						'key' => 'field_6371f86101af8',
-						'label' => 'Label',
-						'name' => 'label',
-						'aria-label' => '',
-						'type' => 'text',
-						'instructions' => '',
-						'required' => 1,
-						'conditional_logic' => 0,
-						'wrapper' => array(
-							'width' => '',
-							'class' => '',
-							'id' => '',
-						),
-						'default_value' => '',
-						'maxlength' => '',
-						'placeholder' => '',
-						'prepend' => '',
-						'append' => '',
-						'parent_repeater' => 'field_6371f78528f87',
-					),
-				),
-			),
-			array(
-				'key' => 'field_62c5381528725',
-				'label' => 'Vehicle Text',
-				'name' => 'vehicle_text',
-				'aria-label' => '',
-				'type' => 'text',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => '',
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-				'maxlength' => '',
-			),
-			array(
-				'key' => 'field_62c537d228722',
-				'label' => 'Vehicle Text Builder',
-				'name' => 'vehicle_text_builder',
-				'aria-label' => '',
-				'type' => 'repeater',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'collapsed' => '',
-				'min' => 0,
-				'max' => 0,
-				'layout' => 'table',
-				'button_label' => 'Add Row',
-				'sub_fields' => array(
-					array(
-						'key' => 'field_62c537de28723',
-						'label' => 'Code',
-						'name' => 'code',
-						'aria-label' => '',
-						'type' => 'text',
-						'instructions' => '',
-						'required' => 1,
-						'conditional_logic' => 0,
-						'wrapper' => array(
-							'width' => '',
-							'class' => '',
-							'id' => '',
-						),
-						'default_value' => '',
-						'placeholder' => '',
-						'prepend' => '',
-						'append' => '',
-						'maxlength' => '',
-						'parent_repeater' => 'field_62c537d228722',
-					),
-					array(
-						'key' => 'field_62c5380b28724',
-						'label' => 'Text',
-						'name' => 'text',
-						'aria-label' => '',
-						'type' => 'text',
-						'instructions' => '',
-						'required' => 1,
-						'conditional_logic' => 0,
-						'wrapper' => array(
-							'width' => '',
-							'class' => '',
-							'id' => '',
-						),
-						'default_value' => '',
-						'placeholder' => '',
-						'prepend' => '',
-						'append' => '',
-						'maxlength' => '',
-						'parent_repeater' => 'field_62c537d228722',
-					),
-				),
-				'rows_per_page' => 20,
-			),
-			array(
-				'key' => 'field_62f3a116c9ab8',
-				'label' => 'Booking Includes Items',
-				'name' => 'booking_includes_items',
-				'aria-label' => '',
-				'type' => 'repeater',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'collapsed' => '',
-				'min' => 0,
-				'max' => 0,
-				'layout' => 'table',
-				'button_label' => 'Add Row',
-				'sub_fields' => array(
-					array(
-						'key' => 'field_62f3a116c9aba',
-						'label' => 'Text',
-						'name' => 'text',
-						'aria-label' => '',
-						'type' => 'text',
-						'instructions' => '',
-						'required' => 1,
-						'conditional_logic' => 0,
-						'wrapper' => array(
-							'width' => '',
-							'class' => '',
-							'id' => '',
-						),
-						'default_value' => '',
-						'placeholder' => '',
-						'prepend' => '',
-						'append' => '',
-						'maxlength' => '',
-						'parent_repeater' => 'field_62f3a116c9ab8',
-					),
-				),
-				'rows_per_page' => 20,
-			),
-			array(
-				'key' => 'field_62fa3f2d133f6',
-				'label' => 'Extra Tooltips',
-				'name' => 'extra_tooltips',
-				'aria-label' => '',
-				'type' => 'repeater',
-				'instructions' => '',
-				'required' => 1,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'collapsed' => '',
-				'min' => 0,
-				'max' => 0,
-				'layout' => 'table',
-				'button_label' => 'Add Row',
-				'sub_fields' => array(
-					array(
-						'key' => 'field_62fa3f39133f8',
-						'label' => 'Code',
-						'name' => 'code',
-						'aria-label' => '',
-						'type' => 'text',
-						'instructions' => '',
-						'required' => 1,
-						'conditional_logic' => 0,
-						'wrapper' => array(
-							'width' => '',
-							'class' => '',
-							'id' => '',
-						),
-						'default_value' => '',
-						'placeholder' => '',
-						'prepend' => '',
-						'append' => '',
-						'maxlength' => '',
-						'parent_repeater' => 'field_62fa3f2d133f6',
-					),
-					array(
-						'key' => 'field_62fa3f2d133f7',
-						'label' => 'Text',
-						'name' => 'text',
-						'aria-label' => '',
-						'type' => 'text',
-						'instructions' => '',
-						'required' => 1,
-						'conditional_logic' => 0,
-						'wrapper' => array(
-							'width' => '',
-							'class' => '',
-							'id' => '',
-						),
-						'default_value' => '',
-						'placeholder' => '',
-						'prepend' => '',
-						'append' => '',
-						'maxlength' => '',
-						'parent_repeater' => 'field_62fa3f2d133f6',
-					),
-				),
-				'rows_per_page' => 20,
-			),
-			array(
-				'key' => 'field_62fcbceca78d5',
-				'label' => 'Checkout Extra Sections',
-				'name' => 'checkout_extra_sections',
-				'aria-label' => '',
-				'type' => 'repeater',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'collapsed' => '',
-				'min' => 0,
-				'max' => 0,
-				'layout' => 'block',
-				'button_label' => 'Add Row',
-				'sub_fields' => array(
-					array(
-						'key' => 'field_62fcbceca78d6',
-						'label' => 'Section',
-						'name' => 'section',
-						'aria-label' => '',
-						'type' => 'text',
-						'instructions' => '',
-						'required' => 1,
-						'conditional_logic' => 0,
-						'wrapper' => array(
-							'width' => '',
-							'class' => '',
-							'id' => '',
-						),
-						'default_value' => '',
-						'placeholder' => '',
-						'prepend' => '',
-						'append' => '',
-						'maxlength' => '',
-						'parent_repeater' => 'field_62fcbceca78d5',
-					),
-					array(
-						'key' => 'field_62fcbceca78d7',
-						'label' => 'Items',
-						'name' => 'items',
-						'aria-label' => '',
-						'type' => 'repeater',
-						'instructions' => '',
-						'required' => 1,
-						'conditional_logic' => 0,
-						'wrapper' => array(
-							'width' => '',
-							'class' => '',
-							'id' => '',
-						),
-						'collapsed' => '',
-						'min' => 0,
-						'max' => 0,
-						'layout' => 'table',
-						'button_label' => 'Add Row',
-						'sub_fields' => array(
-							array(
-								'key' => 'field_62fcbd0ca78d8',
-								'label' => 'Title',
-								'name' => 'title',
-								'aria-label' => '',
-								'type' => 'text',
-								'instructions' => '',
-								'required' => 1,
-								'conditional_logic' => 0,
-								'wrapper' => array(
-									'width' => '',
-									'class' => '',
-									'id' => '',
-								),
-								'default_value' => '',
-								'placeholder' => '',
-								'prepend' => '',
-								'append' => '',
-								'maxlength' => '',
-								'parent_repeater' => 'field_62fcbceca78d7',
-							),
-							array(
-								'key' => 'field_62fcbe6c198d9',
-								'label' => 'Cost',
-								'name' => 'cost',
-								'aria-label' => '',
-								'type' => 'number',
-								'instructions' => '',
-								'required' => 0,
-								'conditional_logic' => 0,
-								'wrapper' => array(
-									'width' => '',
-									'class' => '',
-									'id' => '',
-								),
-								'default_value' => '',
-								'placeholder' => '',
-								'prepend' => '',
-								'append' => '',
-								'min' => '',
-								'max' => '',
-								'step' => '',
-								'parent_repeater' => 'field_62fcbceca78d7',
-							),
-							array(
-								'key' => 'field_62fcbd15a78d9',
-								'label' => 'Above Content',
-								'name' => 'above_content',
-								'aria-label' => '',
-								'type' => 'wysiwyg',
-								'instructions' => '',
-								'required' => 0,
-								'conditional_logic' => 0,
-								'wrapper' => array(
-									'width' => '',
-									'class' => '',
-									'id' => '',
-								),
-								'default_value' => '',
-								'tabs' => 'all',
-								'toolbar' => 'full',
-								'media_upload' => 0,
-								'delay' => 0,
-								'parent_repeater' => 'field_62fcbceca78d7',
-							),
-							array(
-								'key' => 'field_62fcbe80198da',
-								'label' => 'Below Content',
-								'name' => 'below_content',
-								'aria-label' => '',
-								'type' => 'wysiwyg',
-								'instructions' => '',
-								'required' => 0,
-								'conditional_logic' => 0,
-								'wrapper' => array(
-									'width' => '',
-									'class' => '',
-									'id' => '',
-								),
-								'default_value' => '',
-								'tabs' => 'all',
-								'toolbar' => 'full',
-								'media_upload' => 1,
-								'delay' => 0,
-								'parent_repeater' => 'field_62fcbceca78d7',
-							),
-						),
-						'rows_per_page' => 20,
-						'parent_repeater' => 'field_62fcbceca78d5',
-					),
-				),
-				'rows_per_page' => 20,
-			),
-			array(
-				'key' => 'field_6192473b902b9',
-				'label' => 'Styling',
-				'name' => '',
-				'aria-label' => '',
-				'type' => 'tab',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'placement' => 'top',
-				'endpoint' => 0,
-			),
-			array(
-				'key' => 'field_6192474c902ba',
-				'label' => 'Overlay Background Colour',
-				'name' => 'overlay_background_colour',
-				'aria-label' => '',
-				'type' => 'color_picker',
-				'instructions' => '',
-				'required' => 1,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => 'rgba(255,255,255,0.75)',
-				'enable_opacity' => 1,
-				'return_format' => 'string',
-			),
-			array(
-				'key' => 'field_6192474c902bc',
-				'label' => 'Timer Background Colour',
-				'name' => 'timer_background_colour',
-				'aria-label' => '',
-				'type' => 'color_picker',
-				'instructions' => '',
-				'required' => 1,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => 'rgba(0,0,0,0.75)',
-				'enable_opacity' => 1,
-				'return_format' => 'string',
-			),
-			array(
-				'key' => 'field_6192477d902bd',
-				'label' => 'Overlay Loading Gif',
-				'name' => 'overlay_loading_gif',
-				'aria-label' => '',
-				'type' => 'image',
-				'instructions' => '',
-				'required' => 1,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'return_format' => 'url',
-				'preview_size' => 'medium',
-				'library' => 'all',
-				'min_width' => '',
-				'min_height' => '',
-				'min_size' => '',
-				'max_width' => '',
-				'max_height' => '',
-				'max_size' => '',
-				'mime_types' => '',
-			),
-			array(
-				'key' => 'field_63988ad89faec',
-				'label' => 'Booking Session Expired Title',
-				'name' => 'booking_session_expired_title',
-				'aria-label' => '',
-				'type' => 'text',
-				'instructions' => '',
-				'required' => 1,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => '',
-				'maxlength' => '',
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-			),
-			array(
-				'key' => 'field_63988aee9faed',
-				'label' => 'Booking Session Expired Text',
-				'name' => 'booking_session_expired_text',
-				'aria-label' => '',
-				'type' => 'wysiwyg',
-				'instructions' => '',
-				'required' => 1,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => '',
-				'tabs' => 'all',
-				'toolbar' => 'full',
-				'media_upload' => 1,
-				'delay' => 0,
-			),
-			array(
-				'key' => 'field_63988b119faef',
-				'label' => 'Booking Session Button Text',
-				'name' => 'booking_session_button_text',
-				'aria-label' => '',
-				'type' => 'text',
-				'instructions' => '',
-				'required' => 1,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => '',
-				'maxlength' => '',
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-			),
-			array(
-				'key' => 'field_63988b549faf0',
-				'label' => 'Booking Session Button Link',
-				'name' => 'booking_session_button_link',
-				'aria-label' => '',
-				'type' => 'text',
-				'instructions' => '',
-				'required' => 1,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => '',
-				'maxlength' => '',
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-			),
-			array(
-				'key' => 'field_639891f9cfdeb',
-				'label' => 'Booking Session Homepage Timeout',
-				'name' => 'booking_session_homepage_timeout',
-				'aria-label' => '',
-				'type' => 'number',
-				'instructions' => '',
-				'required' => 1,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => 15,
-				'min' => '',
-				'max' => '',
-				'placeholder' => '',
-				'step' => '',
-				'prepend' => '',
-				'append' => '',
-			),
-			array(
-				'key' => 'field_61efcd4f57387',
-				'label' => 'Map',
-				'name' => '',
-				'aria-label' => '',
-				'type' => 'tab',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'placement' => 'top',
-				'endpoint' => 0,
-			),
-			array(
-				'key' => 'field_61efcd5557388',
-				'label' => 'Google Map API Key',
-				'name' => 'google_map_api_key',
-				'aria-label' => '',
-				'type' => 'text',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => '',
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-				'maxlength' => '',
-			),
-			array(
-				'key' => 'field_61efcf7a44c0d',
-				'label' => 'Single Map Zoom',
-				'name' => 'single_map_zoom',
-				'aria-label' => '',
-				'type' => 'number',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => 10,
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-				'min' => 1,
-				'max' => 20,
-				'step' => 1,
-			),
-			array(
-				'key' => 'field_61efcfe444c0f',
-				'label' => 'Single Map Size',
-				'name' => 'single_map_size',
-				'aria-label' => '',
-				'type' => 'number',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => 300,
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-				'min' => '',
-				'max' => '',
-				'step' => '',
-			),
-			array(
-				'key' => 'field_61efcfcf44c0e',
-				'label' => 'Multiple Map Zoom',
-				'name' => 'multiple_map_zoom',
-				'aria-label' => '',
-				'type' => 'number',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => 10,
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-				'min' => 1,
-				'max' => 20,
-				'step' => 1,
-			),
-			array(
-				'key' => 'field_61efcff144c10',
-				'label' => 'Multiple Map Size',
-				'name' => 'multiple_map_size',
-				'aria-label' => '',
-				'type' => 'number',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => 300,
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-				'min' => '',
-				'max' => '',
-				'step' => '',
-			),
-			array(
-				'key' => 'field_61efd9697060a',
-				'label' => 'Map Marker Image',
-				'name' => 'map_marker_image',
-				'aria-label' => '',
-				'type' => 'image',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'return_format' => 'url',
-				'preview_size' => 'medium',
-				'library' => 'all',
-				'min_width' => '',
-				'min_height' => '',
-				'min_size' => '',
-				'max_width' => '',
-				'max_height' => '',
-				'max_size' => '',
-				'mime_types' => '',
-			),
-			array(
-				'key' => 'field_61fa33ff21a38',
-				'label' => 'Tracking',
-				'name' => '',
-				'aria-label' => '',
-				'type' => 'tab',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'placement' => 'top',
-				'endpoint' => 0,
-			),
-			array(
-				'key' => 'field_61fa34ca74fc1',
-				'label' => 'Enable DataLayer',
-				'name' => 'enable_dataLayer',
-				'aria-label' => '',
-				'type' => 'true_false',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'message' => '',
-				'default_value' => 0,
-				'ui' => 0,
-				'ui_on_text' => '',
-				'ui_off_text' => '',
-			),
-			array(
-				'key' => 'field_61fa34e574fc2',
-				'label' => 'DataLayer',
-				'name' => 'datalayer',
-				'aria-label' => '',
-				'type' => 'text',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => '',
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-				'maxlength' => '',
-			),
-			array(
-				'key' => 'field_62c537a128721',
-				'label' => 'Payments',
-				'name' => '',
-				'aria-label' => '',
-				'type' => 'tab',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'placement' => 'top',
-				'endpoint' => 0,
-			),
-			array(
-				'key' => 'field_62bac66d236c1',
-				'label' => 'Custom Field Key For Credit Card Number',
-				'name' => 'custom_field_key_for_credit_card_number',
-				'aria-label' => '',
-				'type' => 'text',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => '',
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-				'maxlength' => '',
-			),
-			array(
-				'key' => 'field_62bac68e236c3',
-				'label' => 'Custom Field Key For Credit Card Expiry Month',
-				'name' => 'custom_field_key_for_credit_card_expiry_month',
-				'aria-label' => '',
-				'type' => 'text',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => '',
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-				'maxlength' => '',
-			),
-			array(
-				'key' => 'field_62bac69f236c4',
-				'label' => 'Custom Field Key For Credit Card Expiry Year',
-				'name' => 'custom_field_key_for_credit_card_expiry_year',
-				'aria-label' => '',
-				'type' => 'text',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => '',
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-				'maxlength' => '',
-			),
-			array(
-				'key' => 'field_635946298ce46',
-				'label' => 'Custom Field Key For Credit Card CVV',
-				'name' => 'custom_field_key_for_credit_card_cvv',
-				'aria-label' => '',
-				'type' => 'text',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => '',
-				'maxlength' => '',
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-			),
-			array(
-				'key' => 'field_62bac680236c2',
-				'label' => 'Custom Field Key For Credit Card Auth Code',
-				'name' => 'custom_field_key_for_credit_card_auth_code',
-				'aria-label' => '',
-				'type' => 'text',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => '',
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-				'maxlength' => '',
-			),
-			array(
-				'key' => 'field_635a8846ac583',
-				'label' => 'Custom Field Key For Credit Card Name',
-				'name' => 'custom_field_key_for_credit_card_name',
-				'aria-label' => '',
-				'type' => 'text',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => '',
-				'maxlength' => '',
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-			),
-			array(
-				'key' => 'field_62fb75aeeb595',
-				'label' => 'Emails',
-				'name' => '',
-				'aria-label' => '',
-				'type' => 'tab',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'placement' => 'top',
-				'endpoint' => 0,
-			),
-			array(
-				'key' => 'field_6356850f1783a',
-				'label' => 'Booking Failure Email Recipients',
-				'name' => 'booking_failure_email_recipients',
-				'aria-label' => '',
-				'type' => 'text',
-				'instructions' => '',
-				'required' => 1,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => '',
-				'maxlength' => '',
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-			),
-			array(
-				'key' => 'field_63568ae108a26',
-				'label' => 'Booking Failure Email Recipients BCC',
-				'name' => 'booking_failure_email_recipients_bcc',
-				'aria-label' => '',
-				'type' => 'text',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => '',
-				'maxlength' => '',
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-			),
-			array(
-				'key' => 'field_6356852a1783b',
-				'label' => 'Booking Failure Customer Email To Contact',
-				'name' => 'booking_failure_customer_email_to_contact',
-				'aria-label' => '',
-				'type' => 'text',
-				'instructions' => '',
-				'required' => 1,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => '',
-				'maxlength' => '',
-				'placeholder' => '',
-				'prepend' => '',
-				'append' => '',
-			),
-			array(
-				'key' => 'field_62fb75b4eb596',
-				'label' => 'Email Instructions',
-				'name' => 'email_instructions',
-				'aria-label' => '',
-				'type' => 'wysiwyg',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => '',
-				'tabs' => 'all',
-				'toolbar' => 'full',
-				'media_upload' => 0,
-				'delay' => 0,
-			),
-			array(
-				'key' => 'field_63062b4da12ac',
-				'label' => 'Email After Details Table',
-				'name' => 'email_after_details_table',
-				'aria-label' => '',
-				'type' => 'wysiwyg',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'default_value' => '',
-				'tabs' => 'all',
-				'toolbar' => 'full',
-				'media_upload' => 1,
-				'delay' => 0,
-			),
-			array(
-				'key' => 'field_6393264e5fd0a',
-				'label' => 'MISC',
-				'name' => '',
-				'aria-label' => '',
-				'type' => 'tab',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'placement' => 'top',
-				'endpoint' => 0,
-			),
-			array(
-				'key' => 'field_6393265f5fd0b',
-				'label' => 'Limit Branches on Specific Pages',
-				'name' => 'limit_branches_on_specific_pages',
-				'aria-label' => '',
-				'type' => 'repeater',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'layout' => 'table',
-				'pagination' => 0,
-				'min' => 0,
-				'max' => 0,
-				'collapsed' => '',
-				'button_label' => 'Add Row',
-				'rows_per_page' => 20,
-				'sub_fields' => array(
-					array(
-						'key' => 'field_6393267d5fd0c',
-						'label' => 'Page',
-						'name' => 'page',
-						'aria-label' => '',
-						'type' => 'post_object',
-						'instructions' => '',
-						'required' => 1,
-						'conditional_logic' => 0,
-						'wrapper' => array(
-							'width' => '',
-							'class' => '',
-							'id' => '',
-						),
-						'post_type' => '',
-						'taxonomy' => '',
-						'return_format' => 'id',
-						'multiple' => 0,
-						'allow_null' => 0,
-						'ui' => 1,
-						'parent_repeater' => 'field_6393265f5fd0b',
-					),
-					array(
-						'key' => 'field_6393269f5fd0d',
-						'label' => 'Branches',
-						'name' => 'branches',
-						'aria-label' => '',
-						'type' => 'relationship',
-						'instructions' => '',
-						'required' => 1,
-						'conditional_logic' => 0,
-						'wrapper' => array(
-							'width' => '',
-							'class' => '',
-							'id' => '',
-						),
-						'post_type' => array(
-							0 => 'branch',
-						),
-						'taxonomy' => '',
-						'filters' => '',
-						'return_format' => 'id',
-						'min' => '',
-						'max' => '',
-						'elements' => '',
-						'parent_repeater' => 'field_6393265f5fd0b',
-					),
-				),
-			),
-			array(
-				'key' => 'field_645b8a32fcac1',
-				'label' => 'Branch Ordering',
-				'name' => 'branch_ordering',
-				'aria-label' => '',
-				'type' => 'repeater',
-				'instructions' => '',
-				'required' => 0,
-				'conditional_logic' => 0,
-				'wrapper' => array(
-					'width' => '',
-					'class' => '',
-					'id' => '',
-				),
-				'layout' => 'table',
-				'pagination' => 0,
-				'min' => 0,
-				'max' => 0,
-				'collapsed' => '',
-				'button_label' => 'Add Row',
-				'rows_per_page' => 20,
-				'sub_fields' => array(
-					array(
-						'key' => 'field_645b8a3efcac2',
-						'label' => 'Branch',
-						'name' => 'branch',
-						'aria-label' => '',
-						'type' => 'post_object',
-						'instructions' => '',
-						'required' => 1,
-						'conditional_logic' => 0,
-						'wrapper' => array(
-							'width' => '',
-							'class' => '',
-							'id' => '',
-						),
-						'post_type' => array(
-							0 => 'branch',
-						),
-						'post_status' => '',
-						'taxonomy' => '',
-						'return_format' => 'id',
-						'multiple' => 1,
-						'allow_null' => 0,
-						'ui' => 1,
-						'parent_repeater' => 'field_645b8a32fcac1',
-					),
-					array(
-						'key' => 'field_645b8a67fcac3',
-						'label' => 'Ordering',
-						'name' => 'ordering',
-						'aria-label' => '',
-						'type' => 'relationship',
-						'instructions' => 'You will need to add all of the vehicles to order it correctly.',
-						'required' => 1,
-						'conditional_logic' => 0,
-						'wrapper' => array(
-							'width' => '',
-							'class' => '',
-							'id' => '',
-						),
-						'post_type' => array(
-							0 => 'product',
-						),
-						'post_status' => '',
-						'taxonomy' => '',
-						'filters' => '',
-						'return_format' => 'id',
-						'min' => '',
-						'max' => '',
-						'elements' => '',
-						'parent_repeater' => 'field_645b8a32fcac1',
-					),
-				),
-			),
+			'placement' => 'top',
+			'endpoint' => 0,
 		),
-		'location' => array(
-			array(
+		array(
+			'key' => 'field_6177eff3e88b9',
+			'label' => 'CARPRO NEXTLEVEL URL',
+			'name' => 'carpro_nextlevel_url',
+			'aria-label' => '',
+			'type' => 'text',
+			'instructions' => '',
+			'required' => 1,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+			'maxlength' => '',
+		),
+		array(
+			'key' => 'field_6177effde88ba',
+			'label' => 'CARPRO NEXTLEVEL KEY',
+			'name' => 'carpro_nextlevel_key',
+			'aria-label' => '',
+			'type' => 'text',
+			'instructions' => '',
+			'required' => 1,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+			'maxlength' => '',
+		),
+		array(
+			'key' => 'field_6177f01ae88bb',
+			'label' => 'CARPRO Sync Branches',
+			'name' => 'carpro_sync_branches',
+			'aria-label' => '',
+			'type' => 'true_false',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'message' => '',
+			'default_value' => 0,
+			'ui' => 0,
+			'ui_on_text' => '',
+			'ui_off_text' => '',
+		),
+		array(
+			'key' => 'field_63c5569ff6624',
+			'label' => 'CARPRO Sync Branches - Disable Content Updates',
+			'name' => 'carpro_sync_branches_-_disable_content_updates',
+			'aria-label' => '',
+			'type' => 'true_false',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => array(
 				array(
-					'param' => 'options_page',
-					'operator' => '==',
-					'value' => 'acf-options-carpro',
+					array(
+						'field' => 'field_6177f01ae88bb',
+						'operator' => '==',
+						'value' => '1',
+					),
+				),
+			),
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'message' => '',
+			'default_value' => 0,
+			'ui' => 0,
+			'ui_on_text' => '',
+			'ui_off_text' => '',
+		),
+		array(
+			'key' => 'field_6177f021e88bc',
+			'label' => 'CARPRO Sync Vehicles',
+			'name' => 'carpro_sync_vehicles',
+			'aria-label' => '',
+			'type' => 'true_false',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'message' => '',
+			'default_value' => 0,
+			'ui' => 0,
+			'ui_on_text' => '',
+			'ui_off_text' => '',
+		),
+		array(
+			'key' => 'field_61b07f6655f88',
+			'label' => 'CARPRO Debug Session',
+			'name' => 'carpro_debug_session',
+			'aria-label' => '',
+			'type' => 'true_false',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'message' => '',
+			'default_value' => 0,
+			'ui' => 0,
+			'ui_on_text' => '',
+			'ui_off_text' => '',
+		),
+		array(
+			'key' => 'field_62f3a103c9ab7',
+			'label' => 'CARPRO Debug Rates',
+			'name' => 'carpro_debug_rates',
+			'aria-label' => '',
+			'type' => 'true_false',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'message' => '',
+			'default_value' => 0,
+			'ui' => 0,
+			'ui_on_text' => '',
+			'ui_off_text' => '',
+		),
+		array(
+			'key' => 'field_64d0be8df661d',
+			'label' => 'CARPRO Don\'t Send Orders',
+			'name' => 'carpro_dont_send_orders',
+			'aria-label' => '',
+			'type' => 'true_false',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'message' => '',
+			'default_value' => 0,
+			'ui' => 0,
+			'ui_on_text' => '',
+			'ui_off_text' => '',
+		),
+		array(
+			'key' => 'field_618d08ec5cc34',
+			'label' => 'Pages',
+			'name' => '',
+			'aria-label' => '',
+			'type' => 'tab',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'placement' => 'top',
+			'endpoint' => 0,
+		),
+		array(
+			'key' => 'field_61a9c991755a0',
+			'label' => 'Search Results Page',
+			'name' => 'search_results_page',
+			'aria-label' => '',
+			'type' => 'page_link',
+			'instructions' => '',
+			'required' => 1,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'post_type' => array(
+				0 => 'page',
+			),
+			'taxonomy' => '',
+			'allow_null' => 0,
+			'allow_archives' => 0,
+			'multiple' => 0,
+		),
+		array(
+			'key' => 'field_61a9c9847559f',
+			'label' => 'Bookings',
+			'name' => '',
+			'aria-label' => '',
+			'type' => 'tab',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'placement' => 'top',
+			'endpoint' => 0,
+		),
+		array(
+			'key' => 'field_62fb837a6d52f',
+			'label' => 'Enable Timer',
+			'name' => 'enable_timer',
+			'aria-label' => '',
+			'type' => 'true_false',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'message' => '',
+			'default_value' => 0,
+			'ui' => 0,
+			'ui_on_text' => '',
+			'ui_off_text' => '',
+		),
+		array(
+			'key' => 'field_62fb83846d530',
+			'label' => 'Timer Length',
+			'name' => 'timer_length',
+			'aria-label' => '',
+			'type' => 'number',
+			'instructions' => '',
+			'required' => 1,
+			'conditional_logic' => array(
+				array(
+					array(
+						'field' => 'field_62fb837a6d52f',
+						'operator' => '==',
+						'value' => '1',
+					),
+				),
+			),
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => 15,
+			'placeholder' => 15,
+			'prepend' => '',
+			'append' => '',
+			'min' => '',
+			'max' => '',
+			'step' => '',
+		),
+		array(
+			'key' => 'field_64f30fce00a47',
+			'label' => 'Show Timer',
+			'name' => 'show_timer',
+			'aria-label' => '',
+			'type' => 'true_false',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => array(
+				array(
+					array(
+						'field' => 'field_62fb837a6d52f',
+						'operator' => '==',
+						'value' => '1',
+					),
+				),
+			),
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'message' => '',
+			'default_value' => 0,
+			'ui' => 0,
+			'ui_on_text' => '',
+			'ui_off_text' => '',
+		),
+		array(
+			'key' => 'field_62fe2f0962374',
+			'label' => 'Booking Lead Hours',
+			'name' => 'booking_lead_hours',
+			'aria-label' => '',
+			'type' => 'number',
+			'instructions' => 'Hours from NOW - same day - that a booking can happen',
+			'required' => 1,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+			'min' => 1,
+			'max' => '',
+			'step' => '',
+		),
+		array(
+			'key' => 'field_618d08f25cc35',
+			'label' => 'Booking Lead Days',
+			'name' => 'booking_lead_days',
+			'aria-label' => '',
+			'type' => 'number',
+			'instructions' => 'Days from Today that a booking can happen',
+			'required' => 1,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+			'min' => '',
+			'max' => '',
+			'step' => '',
+		),
+		array(
+			'key' => 'field_62fe30458a18b',
+			'label' => 'Booking Default Day',
+			'name' => 'booking_default_day',
+			'aria-label' => '',
+			'type' => 'number',
+			'instructions' => 'Default Day from Lead Day.',
+			'required' => 1,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+			'min' => '',
+			'max' => '',
+			'step' => '',
+		),
+		array(
+			'key' => 'field_618d09035cc36',
+			'label' => 'Booking Minimum Length',
+			'name' => 'booking_minimum_length',
+			'aria-label' => '',
+			'type' => 'number',
+			'instructions' => 'Minimum Length of a booking. ZERO will disable.',
+			'required' => 1,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+			'min' => '',
+			'max' => '',
+			'step' => '',
+		),
+		array(
+			'key' => 'field_618d09105cc37',
+			'label' => 'Booking Maximum Length',
+			'name' => 'booking_maximum_length',
+			'aria-label' => '',
+			'type' => 'number',
+			'instructions' => 'Maximum Length of a booking. ZERO will disable.',
+			'required' => 1,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+			'min' => '',
+			'max' => '',
+			'step' => '',
+		),
+		array(
+			'key' => 'field_62b1d4e625e53',
+			'label' => 'Default Branch Time',
+			'name' => 'default_branch_time',
+			'aria-label' => '',
+			'type' => 'time_picker',
+			'instructions' => '',
+			'required' => 1,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'display_format' => 'H:i',
+			'return_format' => 'H:i',
+		),
+		array(
+			'key' => 'field_62fb760da8ee3',
+			'label' => 'Checkout Text',
+			'name' => 'checkout_text',
+			'aria-label' => '',
+			'type' => 'wysiwyg',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'tabs' => 'all',
+			'toolbar' => 'full',
+			'media_upload' => 0,
+			'delay' => 0,
+		),
+		array(
+			'key' => 'field_62fb7472a382d',
+			'label' => 'Enable Payment Type',
+			'name' => 'enable_payment_type',
+			'aria-label' => '',
+			'type' => 'true_false',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'message' => '',
+			'default_value' => 0,
+			'ui' => 0,
+			'ui_on_text' => '',
+			'ui_off_text' => '',
+		),
+		array(
+			'key' => 'field_6371f78528f87',
+			'label' => 'Payment Types',
+			'name' => 'payment_types',
+			'aria-label' => '',
+			'type' => 'repeater',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'layout' => 'table',
+			'pagination' => 0,
+			'min' => 0,
+			'max' => 0,
+			'collapsed' => '',
+			'button_label' => 'Add Row',
+			'rows_per_page' => 20,
+			'sub_fields' => array(
+				array(
+					'key' => 'field_6371f79328f88',
+					'label' => 'Percentage',
+					'name' => 'percentage',
+					'aria-label' => '',
+					'type' => 'number',
+					'instructions' => '',
+					'required' => 1,
+					'conditional_logic' => 0,
+					'wrapper' => array(
+						'width' => '',
+						'class' => '',
+						'id' => '',
+					),
+					'default_value' => '',
+					'min' => '',
+					'max' => '',
+					'placeholder' => '',
+					'step' => '',
+					'prepend' => '',
+					'append' => '',
+					'parent_repeater' => 'field_6371f78528f87',
+				),
+				array(
+					'key' => 'field_6371f86101af8',
+					'label' => 'Label',
+					'name' => 'label',
+					'aria-label' => '',
+					'type' => 'text',
+					'instructions' => '',
+					'required' => 1,
+					'conditional_logic' => 0,
+					'wrapper' => array(
+						'width' => '',
+						'class' => '',
+						'id' => '',
+					),
+					'default_value' => '',
+					'maxlength' => '',
+					'placeholder' => '',
+					'prepend' => '',
+					'append' => '',
+					'parent_repeater' => 'field_6371f78528f87',
 				),
 			),
 		),
-		'menu_order' => 0,
-		'position' => 'normal',
-		'style' => 'default',
-		'label_placement' => 'top',
-		'instruction_placement' => 'label',
-		'hide_on_screen' => '',
-		'active' => true,
-		'description' => '',
-		'show_in_rest' => 0,
-	) );
+		array(
+			'key' => 'field_62c5381528725',
+			'label' => 'Vehicle Text',
+			'name' => 'vehicle_text',
+			'aria-label' => '',
+			'type' => 'text',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+			'maxlength' => '',
+		),
+		array(
+			'key' => 'field_62c537d228722',
+			'label' => 'Vehicle Text Builder',
+			'name' => 'vehicle_text_builder',
+			'aria-label' => '',
+			'type' => 'repeater',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'collapsed' => '',
+			'min' => 0,
+			'max' => 0,
+			'layout' => 'table',
+			'button_label' => 'Add Row',
+			'sub_fields' => array(
+				array(
+					'key' => 'field_62c537de28723',
+					'label' => 'Code',
+					'name' => 'code',
+					'aria-label' => '',
+					'type' => 'text',
+					'instructions' => '',
+					'required' => 1,
+					'conditional_logic' => 0,
+					'wrapper' => array(
+						'width' => '',
+						'class' => '',
+						'id' => '',
+					),
+					'default_value' => '',
+					'placeholder' => '',
+					'prepend' => '',
+					'append' => '',
+					'maxlength' => '',
+					'parent_repeater' => 'field_62c537d228722',
+				),
+				array(
+					'key' => 'field_62c5380b28724',
+					'label' => 'Text',
+					'name' => 'text',
+					'aria-label' => '',
+					'type' => 'text',
+					'instructions' => '',
+					'required' => 1,
+					'conditional_logic' => 0,
+					'wrapper' => array(
+						'width' => '',
+						'class' => '',
+						'id' => '',
+					),
+					'default_value' => '',
+					'placeholder' => '',
+					'prepend' => '',
+					'append' => '',
+					'maxlength' => '',
+					'parent_repeater' => 'field_62c537d228722',
+				),
+				array(
+					'key' => 'field_64fad5a88024c',
+					'label' => 'Type',
+					'name' => 'type',
+					'aria-label' => '',
+					'type' => 'select',
+					'instructions' => '',
+					'required' => 0,
+					'conditional_logic' => 0,
+					'wrapper' => array(
+						'width' => '',
+						'class' => '',
+						'id' => '',
+					),
+					'choices' => array(
+						'standalone' => 'Standalone',
+						'excludes' => 'Excludes',
+					),
+					'default_value' => false,
+					'return_format' => 'value',
+					'multiple' => 0,
+					'allow_null' => 0,
+					'ui' => 0,
+					'ajax' => 0,
+					'placeholder' => '',
+					'parent_repeater' => 'field_62c537d228722',
+				),
+			),
+			'rows_per_page' => 20,
+		),
+		array(
+			'key' => 'field_62f3a116c9ab8',
+			'label' => 'Booking Includes Items',
+			'name' => 'booking_includes_items',
+			'aria-label' => '',
+			'type' => 'repeater',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'collapsed' => '',
+			'min' => 0,
+			'max' => 0,
+			'layout' => 'table',
+			'button_label' => 'Add Row',
+			'sub_fields' => array(
+				array(
+					'key' => 'field_62f3a116c9aba',
+					'label' => 'Text',
+					'name' => 'text',
+					'aria-label' => '',
+					'type' => 'text',
+					'instructions' => '',
+					'required' => 1,
+					'conditional_logic' => 0,
+					'wrapper' => array(
+						'width' => '',
+						'class' => '',
+						'id' => '',
+					),
+					'default_value' => '',
+					'placeholder' => '',
+					'prepend' => '',
+					'append' => '',
+					'maxlength' => '',
+					'parent_repeater' => 'field_62f3a116c9ab8',
+				),
+			),
+			'rows_per_page' => 20,
+		),
+		array(
+			'key' => 'field_62fa3f2d133f6',
+			'label' => 'Extra Tooltips',
+			'name' => 'extra_tooltips',
+			'aria-label' => '',
+			'type' => 'repeater',
+			'instructions' => '',
+			'required' => 1,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'collapsed' => '',
+			'min' => 0,
+			'max' => 0,
+			'layout' => 'table',
+			'button_label' => 'Add Row',
+			'sub_fields' => array(
+				array(
+					'key' => 'field_62fa3f39133f8',
+					'label' => 'Code',
+					'name' => 'code',
+					'aria-label' => '',
+					'type' => 'text',
+					'instructions' => '',
+					'required' => 1,
+					'conditional_logic' => 0,
+					'wrapper' => array(
+						'width' => '',
+						'class' => '',
+						'id' => '',
+					),
+					'default_value' => '',
+					'placeholder' => '',
+					'prepend' => '',
+					'append' => '',
+					'maxlength' => '',
+					'parent_repeater' => 'field_62fa3f2d133f6',
+				),
+				array(
+					'key' => 'field_62fa3f2d133f7',
+					'label' => 'Text',
+					'name' => 'text',
+					'aria-label' => '',
+					'type' => 'text',
+					'instructions' => '',
+					'required' => 1,
+					'conditional_logic' => 0,
+					'wrapper' => array(
+						'width' => '',
+						'class' => '',
+						'id' => '',
+					),
+					'default_value' => '',
+					'placeholder' => '',
+					'prepend' => '',
+					'append' => '',
+					'maxlength' => '',
+					'parent_repeater' => 'field_62fa3f2d133f6',
+				),
+			),
+			'rows_per_page' => 20,
+		),
+		array(
+			'key' => 'field_62fcbceca78d5',
+			'label' => 'Checkout Extra Sections',
+			'name' => 'checkout_extra_sections',
+			'aria-label' => '',
+			'type' => 'repeater',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'collapsed' => '',
+			'min' => 0,
+			'max' => 0,
+			'layout' => 'block',
+			'button_label' => 'Add Row',
+			'sub_fields' => array(
+				array(
+					'key' => 'field_62fcbceca78d6',
+					'label' => 'Section',
+					'name' => 'section',
+					'aria-label' => '',
+					'type' => 'text',
+					'instructions' => '',
+					'required' => 1,
+					'conditional_logic' => 0,
+					'wrapper' => array(
+						'width' => '',
+						'class' => '',
+						'id' => '',
+					),
+					'default_value' => '',
+					'placeholder' => '',
+					'prepend' => '',
+					'append' => '',
+					'maxlength' => '',
+					'parent_repeater' => 'field_62fcbceca78d5',
+				),
+				array(
+					'key' => 'field_62fcbceca78d7',
+					'label' => 'Items',
+					'name' => 'items',
+					'aria-label' => '',
+					'type' => 'repeater',
+					'instructions' => '',
+					'required' => 1,
+					'conditional_logic' => 0,
+					'wrapper' => array(
+						'width' => '',
+						'class' => '',
+						'id' => '',
+					),
+					'collapsed' => '',
+					'min' => 0,
+					'max' => 0,
+					'layout' => 'table',
+					'button_label' => 'Add Row',
+					'sub_fields' => array(
+						array(
+							'key' => 'field_62fcbd0ca78d8',
+							'label' => 'Title',
+							'name' => 'title',
+							'aria-label' => '',
+							'type' => 'text',
+							'instructions' => '',
+							'required' => 1,
+							'conditional_logic' => 0,
+							'wrapper' => array(
+								'width' => '',
+								'class' => '',
+								'id' => '',
+							),
+							'default_value' => '',
+							'placeholder' => '',
+							'prepend' => '',
+							'append' => '',
+							'maxlength' => '',
+							'parent_repeater' => 'field_62fcbceca78d7',
+						),
+						array(
+							'key' => 'field_62fcbe6c198d9',
+							'label' => 'Cost',
+							'name' => 'cost',
+							'aria-label' => '',
+							'type' => 'number',
+							'instructions' => '',
+							'required' => 0,
+							'conditional_logic' => 0,
+							'wrapper' => array(
+								'width' => '',
+								'class' => '',
+								'id' => '',
+							),
+							'default_value' => '',
+							'placeholder' => '',
+							'prepend' => '',
+							'append' => '',
+							'min' => '',
+							'max' => '',
+							'step' => '',
+							'parent_repeater' => 'field_62fcbceca78d7',
+						),
+						array(
+							'key' => 'field_62fcbd15a78d9',
+							'label' => 'Above Content',
+							'name' => 'above_content',
+							'aria-label' => '',
+							'type' => 'wysiwyg',
+							'instructions' => '',
+							'required' => 0,
+							'conditional_logic' => 0,
+							'wrapper' => array(
+								'width' => '',
+								'class' => '',
+								'id' => '',
+							),
+							'default_value' => '',
+							'tabs' => 'all',
+							'toolbar' => 'full',
+							'media_upload' => 0,
+							'delay' => 0,
+							'parent_repeater' => 'field_62fcbceca78d7',
+						),
+						array(
+							'key' => 'field_62fcbe80198da',
+							'label' => 'Below Content',
+							'name' => 'below_content',
+							'aria-label' => '',
+							'type' => 'wysiwyg',
+							'instructions' => '',
+							'required' => 0,
+							'conditional_logic' => 0,
+							'wrapper' => array(
+								'width' => '',
+								'class' => '',
+								'id' => '',
+							),
+							'default_value' => '',
+							'tabs' => 'all',
+							'toolbar' => 'full',
+							'media_upload' => 1,
+							'delay' => 0,
+							'parent_repeater' => 'field_62fcbceca78d7',
+						),
+					),
+					'rows_per_page' => 20,
+					'parent_repeater' => 'field_62fcbceca78d5',
+				),
+			),
+			'rows_per_page' => 20,
+		),
+		array(
+			'key' => 'field_6192473b902b9',
+			'label' => 'Styling',
+			'name' => '',
+			'aria-label' => '',
+			'type' => 'tab',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'placement' => 'top',
+			'endpoint' => 0,
+		),
+		array(
+			'key' => 'field_6192474c902ba',
+			'label' => 'Overlay Background Colour',
+			'name' => 'overlay_background_colour',
+			'aria-label' => '',
+			'type' => 'color_picker',
+			'instructions' => '',
+			'required' => 1,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => 'rgba(255,255,255,0.75)',
+			'enable_opacity' => 1,
+			'return_format' => 'string',
+		),
+		array(
+			'key' => 'field_6192474c902bc',
+			'label' => 'Timer Background Colour',
+			'name' => 'timer_background_colour',
+			'aria-label' => '',
+			'type' => 'color_picker',
+			'instructions' => '',
+			'required' => 1,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => 'rgba(0,0,0,0.75)',
+			'enable_opacity' => 1,
+			'return_format' => 'string',
+		),
+		array(
+			'key' => 'field_6192477d902bd',
+			'label' => 'Overlay Loading Gif',
+			'name' => 'overlay_loading_gif',
+			'aria-label' => '',
+			'type' => 'image',
+			'instructions' => '',
+			'required' => 1,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'return_format' => 'url',
+			'preview_size' => 'medium',
+			'library' => 'all',
+			'min_width' => '',
+			'min_height' => '',
+			'min_size' => '',
+			'max_width' => '',
+			'max_height' => '',
+			'max_size' => '',
+			'mime_types' => '',
+		),
+		array(
+			'key' => 'field_63988ad89faec',
+			'label' => 'Booking Session Expired Title',
+			'name' => 'booking_session_expired_title',
+			'aria-label' => '',
+			'type' => 'text',
+			'instructions' => '',
+			'required' => 1,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'maxlength' => '',
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+		),
+		array(
+			'key' => 'field_63988aee9faed',
+			'label' => 'Booking Session Expired Text',
+			'name' => 'booking_session_expired_text',
+			'aria-label' => '',
+			'type' => 'wysiwyg',
+			'instructions' => '',
+			'required' => 1,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'tabs' => 'all',
+			'toolbar' => 'full',
+			'media_upload' => 1,
+			'delay' => 0,
+		),
+		array(
+			'key' => 'field_63988b119faef',
+			'label' => 'Booking Session Button Text',
+			'name' => 'booking_session_button_text',
+			'aria-label' => '',
+			'type' => 'text',
+			'instructions' => '',
+			'required' => 1,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'maxlength' => '',
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+		),
+		array(
+			'key' => 'field_63988b549faf0',
+			'label' => 'Booking Session Button Link',
+			'name' => 'booking_session_button_link',
+			'aria-label' => '',
+			'type' => 'text',
+			'instructions' => '',
+			'required' => 1,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'maxlength' => '',
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+		),
+		array(
+			'key' => 'field_639891f9cfdeb',
+			'label' => 'Booking Session Homepage Timeout',
+			'name' => 'booking_session_homepage_timeout',
+			'aria-label' => '',
+			'type' => 'number',
+			'instructions' => '',
+			'required' => 1,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => 15,
+			'min' => '',
+			'max' => '',
+			'placeholder' => '',
+			'step' => '',
+			'prepend' => '',
+			'append' => '',
+		),
+		array(
+			'key' => 'field_61efcd4f57387',
+			'label' => 'Map',
+			'name' => '',
+			'aria-label' => '',
+			'type' => 'tab',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'placement' => 'top',
+			'endpoint' => 0,
+		),
+		array(
+			'key' => 'field_61efcd5557388',
+			'label' => 'Google Map API Key',
+			'name' => 'google_map_api_key',
+			'aria-label' => '',
+			'type' => 'text',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+			'maxlength' => '',
+		),
+		array(
+			'key' => 'field_61efcf7a44c0d',
+			'label' => 'Single Map Zoom',
+			'name' => 'single_map_zoom',
+			'aria-label' => '',
+			'type' => 'number',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => 10,
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+			'min' => 1,
+			'max' => 20,
+			'step' => 1,
+		),
+		array(
+			'key' => 'field_61efcfe444c0f',
+			'label' => 'Single Map Size',
+			'name' => 'single_map_size',
+			'aria-label' => '',
+			'type' => 'number',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => 300,
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+			'min' => '',
+			'max' => '',
+			'step' => '',
+		),
+		array(
+			'key' => 'field_61efcfcf44c0e',
+			'label' => 'Multiple Map Zoom',
+			'name' => 'multiple_map_zoom',
+			'aria-label' => '',
+			'type' => 'number',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => 10,
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+			'min' => 1,
+			'max' => 20,
+			'step' => 1,
+		),
+		array(
+			'key' => 'field_61efcff144c10',
+			'label' => 'Multiple Map Size',
+			'name' => 'multiple_map_size',
+			'aria-label' => '',
+			'type' => 'number',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => 300,
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+			'min' => '',
+			'max' => '',
+			'step' => '',
+		),
+		array(
+			'key' => 'field_61efd9697060a',
+			'label' => 'Map Marker Image',
+			'name' => 'map_marker_image',
+			'aria-label' => '',
+			'type' => 'image',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'return_format' => 'url',
+			'preview_size' => 'medium',
+			'library' => 'all',
+			'min_width' => '',
+			'min_height' => '',
+			'min_size' => '',
+			'max_width' => '',
+			'max_height' => '',
+			'max_size' => '',
+			'mime_types' => '',
+		),
+		array(
+			'key' => 'field_61fa33ff21a38',
+			'label' => 'Tracking',
+			'name' => '',
+			'aria-label' => '',
+			'type' => 'tab',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'placement' => 'top',
+			'endpoint' => 0,
+		),
+		array(
+			'key' => 'field_61fa34ca74fc1',
+			'label' => 'Enable DataLayer',
+			'name' => 'enable_dataLayer',
+			'aria-label' => '',
+			'type' => 'true_false',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'message' => '',
+			'default_value' => 0,
+			'ui' => 0,
+			'ui_on_text' => '',
+			'ui_off_text' => '',
+		),
+		array(
+			'key' => 'field_61fa34e574fc2',
+			'label' => 'DataLayer',
+			'name' => 'datalayer',
+			'aria-label' => '',
+			'type' => 'text',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+			'maxlength' => '',
+		),
+		array(
+			'key' => 'field_62c537a128721',
+			'label' => 'Payments',
+			'name' => '',
+			'aria-label' => '',
+			'type' => 'tab',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'placement' => 'top',
+			'endpoint' => 0,
+		),
+		array(
+			'key' => 'field_62bac66d236c1',
+			'label' => 'Custom Field Key For Credit Card Number',
+			'name' => 'custom_field_key_for_credit_card_number',
+			'aria-label' => '',
+			'type' => 'text',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+			'maxlength' => '',
+		),
+		array(
+			'key' => 'field_62bac68e236c3',
+			'label' => 'Custom Field Key For Credit Card Expiry Month',
+			'name' => 'custom_field_key_for_credit_card_expiry_month',
+			'aria-label' => '',
+			'type' => 'text',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+			'maxlength' => '',
+		),
+		array(
+			'key' => 'field_62bac69f236c4',
+			'label' => 'Custom Field Key For Credit Card Expiry Year',
+			'name' => 'custom_field_key_for_credit_card_expiry_year',
+			'aria-label' => '',
+			'type' => 'text',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+			'maxlength' => '',
+		),
+		array(
+			'key' => 'field_635946298ce46',
+			'label' => 'Custom Field Key For Credit Card CVV',
+			'name' => 'custom_field_key_for_credit_card_cvv',
+			'aria-label' => '',
+			'type' => 'text',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'maxlength' => '',
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+		),
+		array(
+			'key' => 'field_62bac680236c2',
+			'label' => 'Custom Field Key For Credit Card Auth Code',
+			'name' => 'custom_field_key_for_credit_card_auth_code',
+			'aria-label' => '',
+			'type' => 'text',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+			'maxlength' => '',
+		),
+		array(
+			'key' => 'field_635a8846ac583',
+			'label' => 'Custom Field Key For Credit Card Name',
+			'name' => 'custom_field_key_for_credit_card_name',
+			'aria-label' => '',
+			'type' => 'text',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'maxlength' => '',
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+		),
+		array(
+			'key' => 'field_62fb75aeeb595',
+			'label' => 'Emails',
+			'name' => '',
+			'aria-label' => '',
+			'type' => 'tab',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'placement' => 'top',
+			'endpoint' => 0,
+		),
+		array(
+			'key' => 'field_6356850f1783a',
+			'label' => 'Booking Failure Email Recipients',
+			'name' => 'booking_failure_email_recipients',
+			'aria-label' => '',
+			'type' => 'text',
+			'instructions' => '',
+			'required' => 1,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'maxlength' => '',
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+		),
+		array(
+			'key' => 'field_63568ae108a26',
+			'label' => 'Booking Failure Email Recipients BCC',
+			'name' => 'booking_failure_email_recipients_bcc',
+			'aria-label' => '',
+			'type' => 'text',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'maxlength' => '',
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+		),
+		array(
+			'key' => 'field_6356852a1783b',
+			'label' => 'Booking Failure Customer Email To Contact',
+			'name' => 'booking_failure_customer_email_to_contact',
+			'aria-label' => '',
+			'type' => 'text',
+			'instructions' => '',
+			'required' => 1,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'maxlength' => '',
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+		),
+		array(
+			'key' => 'field_62fb75b4eb596',
+			'label' => 'Email Instructions',
+			'name' => 'email_instructions',
+			'aria-label' => '',
+			'type' => 'wysiwyg',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'tabs' => 'all',
+			'toolbar' => 'full',
+			'media_upload' => 0,
+			'delay' => 0,
+		),
+		array(
+			'key' => 'field_63062b4da12ac',
+			'label' => 'Email After Details Table',
+			'name' => 'email_after_details_table',
+			'aria-label' => '',
+			'type' => 'wysiwyg',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'tabs' => 'all',
+			'toolbar' => 'full',
+			'media_upload' => 1,
+			'delay' => 0,
+		),
+		array(
+			'key' => 'field_64de075c40c9f',
+			'label' => 'Branch Custom Email Recipients',
+			'name' => 'branch_custom_email_recipients',
+			'aria-label' => '',
+			'type' => 'repeater',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'layout' => 'table',
+			'pagination' => 0,
+			'min' => 0,
+			'max' => 0,
+			'collapsed' => '',
+			'button_label' => 'Add Row',
+			'rows_per_page' => 20,
+			'sub_fields' => array(
+				array(
+					'key' => 'field_64de075c40ca3',
+					'label' => 'Branch',
+					'name' => 'branch',
+					'aria-label' => '',
+					'type' => 'post_object',
+					'instructions' => '',
+					'required' => 1,
+					'conditional_logic' => 0,
+					'wrapper' => array(
+						'width' => '',
+						'class' => '',
+						'id' => '',
+					),
+					'post_type' => array(
+						0 => 'branch',
+					),
+					'post_status' => '',
+					'taxonomy' => '',
+					'return_format' => 'object',
+					'multiple' => 0,
+					'allow_null' => 0,
+					'ui' => 1,
+					'bidirectional_target' => array(
+					),
+					'parent_repeater' => 'field_64de075c40c9f',
+				),
+				array(
+					'key' => 'field_64de075c40ca4',
+					'label' => 'Email',
+					'name' => 'email',
+					'aria-label' => '',
+					'type' => 'text',
+					'instructions' => '',
+					'required' => 1,
+					'conditional_logic' => 0,
+					'wrapper' => array(
+						'width' => '',
+						'class' => '',
+						'id' => '',
+					),
+					'default_value' => '',
+					'maxlength' => '',
+					'placeholder' => '',
+					'prepend' => '',
+					'append' => '',
+					'parent_repeater' => 'field_64de075c40c9f',
+				),
+			),
+		),
+		array(
+			'key' => 'field_64de060640c9c',
+			'label' => 'Branch Custom Email Content',
+			'name' => 'branch_custom_email_content',
+			'aria-label' => '',
+			'type' => 'repeater',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'layout' => 'table',
+			'pagination' => 0,
+			'min' => 0,
+			'max' => 0,
+			'collapsed' => '',
+			'button_label' => 'Add Row',
+			'rows_per_page' => 20,
+			'sub_fields' => array(
+				array(
+					'key' => 'field_64de06b540c9d',
+					'label' => 'Branch',
+					'name' => 'branch',
+					'aria-label' => '',
+					'type' => 'post_object',
+					'instructions' => '',
+					'required' => 1,
+					'conditional_logic' => 0,
+					'wrapper' => array(
+						'width' => '',
+						'class' => '',
+						'id' => '',
+					),
+					'post_type' => array(
+						0 => 'branch',
+					),
+					'post_status' => '',
+					'taxonomy' => '',
+					'return_format' => '',
+					'multiple' => 0,
+					'allow_null' => 0,
+					'ui' => 1,
+					'bidirectional_target' => array(
+					),
+					'parent_repeater' => 'field_64de060640c9c',
+				),
+				array(
+					'key' => 'field_64de06d540c9e',
+					'label' => 'Content',
+					'name' => 'content',
+					'aria-label' => '',
+					'type' => 'wysiwyg',
+					'instructions' => '',
+					'required' => 1,
+					'conditional_logic' => 0,
+					'wrapper' => array(
+						'width' => '',
+						'class' => '',
+						'id' => '',
+					),
+					'default_value' => '',
+					'tabs' => 'all',
+					'toolbar' => 'full',
+					'media_upload' => 1,
+					'delay' => 0,
+					'parent_repeater' => 'field_64de060640c9c',
+				),
+			),
+		),
+		array(
+			'key' => 'field_6393264e5fd0a',
+			'label' => 'MISC',
+			'name' => '',
+			'aria-label' => '',
+			'type' => 'tab',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'placement' => 'top',
+			'endpoint' => 0,
+		),
+		array(
+			'key' => 'field_6393265f5fd0b',
+			'label' => 'Limit Branches on Specific Pages',
+			'name' => 'limit_branches_on_specific_pages',
+			'aria-label' => '',
+			'type' => 'repeater',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'layout' => 'table',
+			'pagination' => 0,
+			'min' => 0,
+			'max' => 0,
+			'collapsed' => '',
+			'button_label' => 'Add Row',
+			'rows_per_page' => 20,
+			'sub_fields' => array(
+				array(
+					'key' => 'field_6393267d5fd0c',
+					'label' => 'Page',
+					'name' => 'page',
+					'aria-label' => '',
+					'type' => 'post_object',
+					'instructions' => '',
+					'required' => 1,
+					'conditional_logic' => 0,
+					'wrapper' => array(
+						'width' => '',
+						'class' => '',
+						'id' => '',
+					),
+					'post_type' => '',
+					'taxonomy' => '',
+					'return_format' => 'id',
+					'multiple' => 0,
+					'allow_null' => 0,
+					'ui' => 1,
+					'bidirectional_target' => array(
+					),
+					'parent_repeater' => 'field_6393265f5fd0b',
+				),
+				array(
+					'key' => 'field_6393269f5fd0d',
+					'label' => 'Branches',
+					'name' => 'branches',
+					'aria-label' => '',
+					'type' => 'relationship',
+					'instructions' => '',
+					'required' => 1,
+					'conditional_logic' => 0,
+					'wrapper' => array(
+						'width' => '',
+						'class' => '',
+						'id' => '',
+					),
+					'post_type' => array(
+						0 => 'branch',
+					),
+					'taxonomy' => '',
+					'filters' => '',
+					'return_format' => 'id',
+					'min' => '',
+					'max' => '',
+					'elements' => '',
+					'bidirectional_target' => array(
+					),
+					'parent_repeater' => 'field_6393265f5fd0b',
+				),
+			),
+		),
+		array(
+			'key' => 'field_645b8a32fcac1',
+			'label' => 'Branch Ordering',
+			'name' => 'branch_ordering',
+			'aria-label' => '',
+			'type' => 'repeater',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'layout' => 'table',
+			'pagination' => 0,
+			'min' => 0,
+			'max' => 0,
+			'collapsed' => '',
+			'button_label' => 'Add Row',
+			'rows_per_page' => 20,
+			'sub_fields' => array(
+				array(
+					'key' => 'field_645b8a3efcac2',
+					'label' => 'Branch',
+					'name' => 'branch',
+					'aria-label' => '',
+					'type' => 'post_object',
+					'instructions' => '',
+					'required' => 1,
+					'conditional_logic' => 0,
+					'wrapper' => array(
+						'width' => '',
+						'class' => '',
+						'id' => '',
+					),
+					'post_type' => array(
+						0 => 'branch',
+					),
+					'post_status' => '',
+					'taxonomy' => '',
+					'return_format' => 'id',
+					'multiple' => 1,
+					'allow_null' => 0,
+					'ui' => 1,
+					'bidirectional_target' => array(
+					),
+					'parent_repeater' => 'field_645b8a32fcac1',
+				),
+				array(
+					'key' => 'field_645b8a67fcac3',
+					'label' => 'Ordering',
+					'name' => 'ordering',
+					'aria-label' => '',
+					'type' => 'relationship',
+					'instructions' => 'You will need to add all of the vehicles to order it correctly.',
+					'required' => 1,
+					'conditional_logic' => 0,
+					'wrapper' => array(
+						'width' => '',
+						'class' => '',
+						'id' => '',
+					),
+					'post_type' => 'product',
+					'post_status' => '',
+					'taxonomy' => '',
+					'filters' => '',
+					'return_format' => 'id',
+					'min' => '',
+					'max' => '',
+					'elements' => '',
+					'bidirectional_target' => array(
+					),
+					'parent_repeater' => 'field_645b8a32fcac1',
+				),
+			),
+		),
+	),
+	'location' => array(
+		array(
+			array(
+				'param' => 'options_page',
+				'operator' => '==',
+				'value' => 'acf-options-carpro',
+			),
+		),
+	),
+	'menu_order' => 0,
+	'position' => 'normal',
+	'style' => 'default',
+	'label_placement' => 'top',
+	'instruction_placement' => 'label',
+	'hide_on_screen' => '',
+	'active' => true,
+	'description' => '',
+	'show_in_rest' => 0,
+) );
 
 	
 
@@ -3127,14 +3387,15 @@ acf_add_local_field_group( array(
 		    'show_ui' => true, 
 		    'query_var' => true,
 		    'rewrite' => array( 'slug' => $rewrite ),
-		    'capability_type' => 'post',
+		    'capability_type' => 'carpro_branch',
 		    'hierarchical' => false,
 		    'menu_position' => null, 
 		    'menu_icon' => 'dashicons-admin-site-alt',
 		    'has_archive' => true, 
 		    'show_in_rest' => true,
 		    'supports' => array('title', 'thumbnail', 'editor'),
-    		'taxonomies' => array( 'province'), 
+    		'taxonomies' => array( 'province'),
+			'map_meta_cap' => true 
 		  );
 		      
 		  register_post_type( 'branch', $args );
@@ -3190,13 +3451,14 @@ acf_add_local_field_group( array(
 		    'show_ui' => true, 
 		    'query_var' => false,
 		    'rewrite' => array( 'slug' => $rewrite ),
-		    'capability_type' => 'post',
+		    'capability_type' => 'carpro_public_holiday',
 		    'hierarchical' => false,
 		    'menu_position' => null, 
 		    'menu_icon' => 'dashicons-star-filled',
 		    'has_archive' => false, 
 		    'show_in_rest' => true,
-		    'supports' => array('title') 
+		    'supports' => array('title'),
+			'map_meta_cap' => true 
 		  );
 		      
 		  register_post_type( 'publicholiday', $args );
@@ -3204,6 +3466,43 @@ acf_add_local_field_group( array(
 
 		  
 		
+	}
+
+
+
+
+
+
+
+
+
+	/* ADD PRIVS FOR POST TYPES */
+	public function admin_init(){
+
+		$role = get_role( 'administrator');
+
+		$role->add_cap('delete_others_carpro_branchs');
+    	$role->add_cap('delete_private_carpro_branchs');
+    	$role->add_cap('delete_published_carpro_branchs');
+    	$role->add_cap('delete_carpro_branchs');
+    	$role->add_cap('edit_others_carpro_branchs');
+    	$role->add_cap('edit_private_carpro_branchs');
+    	$role->add_cap('edit_published_carpro_branchs');
+    	$role->add_cap('edit_carpro_branchs');
+    	$role->add_cap('publish_carpro_branchs');
+    	$role->add_cap('read_private_carpro_branchs');
+
+		$role->add_cap('delete_others_carpro_public_holidays');
+    	$role->add_cap('delete_private_carpro_public_holidays');
+    	$role->add_cap('delete_published_carpro_public_holidays');
+    	$role->add_cap('delete_carpro_public_holidays');
+    	$role->add_cap('edit_others_carpro_public_holidays');
+    	$role->add_cap('edit_private_carpro_public_holidays');
+    	$role->add_cap('edit_published_carpro_public_holidays');
+    	$role->add_cap('edit_carpro_public_holidays');
+    	$role->add_cap('publish_carpro_public_holidays');
+    	$role->add_cap('read_private_carpro_public_holidays');
+
 	}
 
 
@@ -3339,7 +3638,7 @@ acf_add_local_field_group( array(
 
 		endforeach;
 
-		 return $n_columns;
+		return $n_columns;
 
 	}
 
@@ -3563,7 +3862,7 @@ acf_add_local_field_group( array(
 
 		CARPRO_HELPERS::CLEAR_CARPRO();
 
-		CARPRO::DOAVAILABLILITY($_PARAMS);
+		CARPRO::DOAVAILABLILITY($_PARAMS, $_POST['user_id']);
 
 		//$_URL = get_permalink( woocommerce_get_page_id( 'shop' ) );
 		$_URL = get_field('search_results_page', 'option');
@@ -3587,69 +3886,94 @@ acf_add_local_field_group( array(
 	/* AJAX: ADD TO CART */
 	public function carpro_ajax_do_add_to_cart(){
 
-		WC()->session->__unset('carpro_selected_vehicle');
-		WC()->session->__unset('carpro_selected_sku');
-		WC()->session->__unset('carpro_selected_km');
-		WC()->session->__unset('carpro_selected_code');
-		WC()->session->__unset('carpro_one_way_fee');
+		//if(WC()->session->get('carpro_availability')):
 
-		WC()->cart->empty_cart();
+			WC()->session->__unset('carpro_selected_vehicle');
+			WC()->session->__unset('carpro_selected_sku');
+			WC()->session->__unset('carpro_selected_km');
+			WC()->session->__unset('carpro_selected_code');
+			WC()->session->__unset('carpro_one_way_fee');
 
-		$_VEHICLE = $_POST['vehicle'];
-		$_ID = $_POST['id'];
-		$_KM = $_POST['km'];
-		$_CODE = $_POST['code'];
-		$_SKU = $_POST['sku'];
-		$_OWF = $_POST['owf'];
+			WC()->cart->empty_cart();
 
-		WC()->cart->add_to_cart($_ID, 1);
+			$_VEHICLE = $_POST['vehicle'];
+			$_ID = $_POST['id'];
+			$_KM = $_POST['km'];
+			$_CODE = $_POST['code'];
+			$_SKU = $_POST['sku'];
+			$_OWF = $_POST['owf'];
 
-		WC()->session->set('carpro_selected_vehicle', $_VEHICLE);
-		WC()->session->set('carpro_selected_sku', $_SKU);
-		WC()->session->set('carpro_selected_km', $_KM);
-		WC()->session->set('carpro_selected_code', $_CODE);
-		WC()->session->set('carpro_one_way_fee', $_OWF);
+			WC()->cart->add_to_cart($_ID, 1);
 
-		foreach(WC()->session->get('carpro_availability') as $_VEH => $_DATA):
+			WC()->session->set('carpro_selected_vehicle', $_VEHICLE);
+			WC()->session->set('carpro_selected_sku', $_SKU);
+			WC()->session->set('carpro_selected_km', $_KM);
+			WC()->session->set('carpro_selected_code', $_CODE);
+			WC()->session->set('carpro_one_way_fee', $_OWF);
 
-			if(trim($_VEHICLE) == trim($_DATA['vehicle']['international'])):
+			foreach(WC()->session->get('carpro_availability') as $_VEH => $_DATA):
 
-				$_RATES 	= $_DATA['vehicle']['rates'];
-				$_FEES 		= $_DATA['vehicle']['fees'];
-				$_EXTRA_D	= $_DATA['vehicle']['extras']['daily'];
-				$_EXTRA_O 	= $_DATA['vehicle']['extras']['once'];
+				if(trim($_VEHICLE) == trim($_DATA['vehicle']['international'])):
 
-				foreach($_RATES as $_KM_ID => $_KM_RATES):
+					$_RATES = array();
+					$_FEES = array();
+					$_EXTRA_D = array();
+					$_EXTRA_O = array();
 
-					if($_KM == $_KM_ID):
-
-						$_THE_RATES = $_KM_RATES['rates'];
-						
-						foreach($_THE_RATES as $_KM_RATE):
-
-							if($_KM_RATE['code'] == $_CODE):
-
-								WC()->session->set('carpro_selected_rate', $_KM_RATE);
-								$_EXTRAS = $_KM_RATES['extras'];
-								$_EXTRA_D	= array_merge($_EXTRA_D, $_EXTRAS['daily']);
-								$_EXTRA_O 	= array_merge($_EXTRA_O, $_EXTRAS['once']);
-								WC()->session->set('carpro_available_extras_daily', $_EXTRA_D);
-								WC()->session->set('carpro_available_extras_once', $_EXTRA_O);
-								WC()->session->set('carpro_fees', $_FEES);
-
-							endif;
-
-						endforeach;
-
+					if(isset($_DATA['vehicle']['rates']) && is_array($_DATA['vehicle']['rates'])):
+						$_RATES 	= $_DATA['vehicle']['rates'];
 					endif;
 
-				endforeach;
+					if(isset($_DATA['vehicle']['fees']) && is_array($_DATA['vehicle']['fees'])):
+						$_FEES 		= $_DATA['vehicle']['fees'];
+					endif;
 
-			endif;
+					if(isset($_DATA['vehicle']['extras']['daily']) && is_array($_DATA['vehicle']['extras']['daily'])):
+						$_EXTRA_D	= $_DATA['vehicle']['extras']['daily'];
+					endif;
 
-		endforeach;
+					if(isset($_DATA['vehicle']['extras']['once']) && is_array($_DATA['vehicle']['extras']['once'])):
+						$_EXTRA_O 	= $_DATA['vehicle']['extras']['once'];
+					endif;
 
-		echo wc_get_checkout_url();
+					foreach($_RATES as $_KM_ID => $_KM_RATES):
+
+						if($_KM == $_KM_ID):
+
+							$_THE_RATES = $_KM_RATES['rates'];
+							
+							foreach($_THE_RATES as $_KM_RATE):
+
+								if($_KM_RATE['code'] == $_CODE):
+
+									WC()->session->set('carpro_selected_rate', $_KM_RATE);
+									$_EXTRAS = $_KM_RATES['extras'];
+									$_EXTRA_D	= array_merge($_EXTRA_D, $_EXTRAS['daily']);
+									$_EXTRA_O 	= array_merge($_EXTRA_O, $_EXTRAS['once']);
+									WC()->session->set('carpro_available_extras_daily', $_EXTRA_D);
+									WC()->session->set('carpro_available_extras_once', $_EXTRA_O);
+									WC()->session->set('carpro_fees', $_FEES);
+
+								endif;
+
+							endforeach;
+
+						endif;
+
+					endforeach;
+
+				endif;
+
+			endforeach;
+
+			echo wc_get_checkout_url();
+
+		//else:
+
+			//echo get_field('search_results_page', 'option');
+
+		//endif;
+
 		exit;
 
 	}
@@ -3672,7 +3996,13 @@ acf_add_local_field_group( array(
 
 			if(WC()->session->get('carpro_out_branch')):
 
-				if(CARPRO_HELPERS::IS_SEARCH_RESULTS($_POST['object_id']) || is_checkout() || is_shop()):
+				if($_POST && isset($_POST['object_id'])):
+					$_OBJECT_ID = $_POST['object_id'];
+				else:
+					$_OBJECT_ID = false;
+				endif;
+
+				if(CARPRO_HELPERS::IS_SEARCH_RESULTS($_OBJECT_ID) || is_checkout() || is_shop()):
 
 					$_URL = get_field('search_results_page', 'option');
 
@@ -3856,22 +4186,6 @@ acf_add_local_field_group( array(
 
 
 
-	/* SLEEP THANK YOU PAGE TO ALLOW ORDER NUMBER TO APPEAR */
-	public function woocommerce_thankyou_order_id($_ORDER_ID){
-		sleep(5);
-
-		return $_ORDER_ID;
-	}
-
-
-
-
-
-
-
-
-
-
 	/* REMOVE PROCESSING NOTIFICATIONS */
 	public function woocommerce_email($_EMAIL_CLASS){
 
@@ -3934,7 +4248,6 @@ acf_add_local_field_group( array(
 		
 		CARPRO_HELPERS::CLEAR_CARPRO();
 		CARPRO::DORESERVATION($_ORDER_ID);
-		do_action('k8_adumo_enterprise_clear_card_details');
 
 	}
 
@@ -3989,17 +4302,30 @@ acf_add_local_field_group( array(
 	/* ADD DETAILS TO ORDER EMAIL */
 	public function woocommerce_email_order_details($_ORDER, $_ADMIN){
 
-		if(get_field('email_instructions', 'option') && !$_ADMIN):
+		if(!$_ADMIN):
 
-			the_field('email_instructions', 'option');
+			$_CUSTOM_BRANCH_CONTENT = CARPRO_HELPERS::BRANCH_CUSTOM_EMAIL_CONTENT($_ORDER);
 
-		endif;	
+			if($_CUSTOM_BRANCH_CONTENT):
+
+				echo $_CUSTOM_BRANCH_CONTENT;
+
+			elseif(get_field('email_instructions', 'option')):
+
+				the_field('email_instructions', 'option');
+
+			endif;	
+
+		endif;
+
 
 		if(get_post_meta($_ORDER->get_id(), 'carpro_error', true)):
 
 			$_CAR_PRO_ERROR = get_post_meta($_ORDER->get_id(), 'carpro_error', true);
 
-			$_EMAIL = get_option('booking_failure_customer_email_to_contact','option');
+			if(is_array($_CAR_PRO_ERROR)): $_CAR_PRO_ERROR = implode(" ", $_CAR_PRO_ERROR); endif;
+
+			$_EMAIL = get_field('booking_failure_customer_email_to_contact','option');
 
 			echo '<p>Our apologies, there seems to have been an issue with our reservation system. kindly EMAIL <a href="mailto:'.$_EMAIL.'">'.$_EMAIL.'</a> with <strong>REFERENCE: '.$_ORDER->get_id().'</strong> and <strong>ERROR: '.$_CAR_PRO_ERROR.'</strong></p>';
 
@@ -4040,8 +4366,47 @@ acf_add_local_field_group( array(
 
 
 
+	/* CUSTOM BRANCH EMAIL */
+	public function woocommerce_email_recipient_new_order($_ID, $_RECIPIENT, $_ORDER){
+		/*
+		$_CUSTOM = CARPRO_HELPERS::BRANCH_CUSTOM_EMAIL_RECIPIENT($_ORDER);
+
+		if($_CUSTOM): $_RECIPIENT = $_CUSTOM; endif;
+		*/
+		return $_RECIPIENT;
+
+	}
+
+
+
+
+
+
+
+
+
+
 	public function wp_logout($_USER_ID){
+		WC()->cart->empty_cart();
 		CARPRO_HELPERS::CLEAR_CARPRO();
+	}
+
+
+
+
+
+
+
+
+
+	public function woocommerce_add_notice($_MSG){
+
+		if ( $_MSG == 'Checkout is not available whilst your cart is empty.' ) {
+	        return false;
+	    }   
+	    
+	    return $_MSG;
+
 	}
 
 

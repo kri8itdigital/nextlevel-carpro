@@ -81,7 +81,9 @@ endif;
 		<?php $_CART_AMOUNT = CARPRO_HELPERS::GET_CART_TOTAL(); ?>
 
 
-		<?php if(WC()->session->get('carpro_deposit_title')): ?>
+		<?php $_DEP_VALUE = 0; ?>
+
+		<?php if(WC()->session->get('carpro_deposit_title') && get_field('enable_payment_type','option')): ?>
 
 			<?php 
 
@@ -101,7 +103,7 @@ endif;
 					<div class="col-12 col-sm-6"><strong><?php echo esc_html( 'Rental Amount' ); ?></strong>:</div>
 					<div class="col-12 col-sm-6"><?php echo wc_price(CARPRO_HELPERS::GET_CART_TOTAL()); ?></div>
 				</div>
-				<div class="row no-gutters fee fee-<?php echo sanitize_title($_DEP_TITLE); ?>">
+				<div class="row no-gutters fee fee-payment-type fee-<?php echo sanitize_title($_DEP_TITLE); ?>">
 					<div class="col-12 col-sm-6"><strong><?php echo esc_html( $_DEP_TITLE ); ?></strong>:</div>
 					<div class="col-12 col-sm-6"><?php echo wc_price( $_DEP_VALUE ); ?></div>
 				</div>
@@ -140,6 +142,7 @@ endif;
 		<?php do_action( 'woocommerce_review_order_before_order_total' ); ?>
 
 		<?php $_BALANCE_DUE = (float)$_CART_AMOUNT - (float)$_DEP_VALUE; ?>
+		<?php if($_BALANCE_DUE < 0): $_BALANCE_DUE = 0; endif; ?>
 
 		<div class="row no-gutters order-total">
 			<div class="col-12 col-sm-6"><strong><?php esc_html_e( $_TOTAL_TITLE, 'woocommerce' ); ?></strong>:</div>

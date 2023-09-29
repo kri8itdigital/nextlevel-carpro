@@ -26,7 +26,7 @@ class CARPRO{
 
 		$_ARGS = array(
 		    'method' => 'GET',
-		    'timeout' => 600,
+		    'timeout' => 6000,
 		    'headers' => array(
 		        'Content-Type' => 'application/json',
 		        'Accept' => 'application/json',
@@ -198,6 +198,8 @@ class CARPRO{
     	$_DAILY = get_post_meta($_ORDER_ID, 'carpro_selected_daily_extras', true);
     	$_DAILY = maybe_unserialize($_DAILY);
 
+    	if(!is_array($_DAILY)): $_DAILY = array(); endif;
+
     	//echo '<pre>'; print_r($_DAILY); echo '</pre>';
 
     	foreach($_DAILY as $_CODE => $_DATA):
@@ -211,6 +213,8 @@ class CARPRO{
 
     	$_ONCE = get_post_meta($_ORDER_ID, 'carpro_selected_once_extras', true);
     	$_ONCE = maybe_unserialize($_ONCE);
+
+    	if(!is_array($_ONCE)): $_ONCE = array(); endif;
 
     	//echo '<pre>'; print_r($_ONCE); echo '</pre>';
 
@@ -247,42 +251,48 @@ class CARPRO{
         	unset($_PARAMS['CreditCardExpiry']);
 
         endif;
+
+        $_PARAMS = apply_filters('NL_CARPRO_FILTER_RESERVATION_PARAMS', $_PARAMS, $_ORDER_ID);
         
         update_post_meta($_ORDER_ID, 'carpro_reservation_data', $_PARAMS);
 
-        $_DATA = self::DOCALL($_ENDPOINT, $_DATA_TO_POST);
+        if(!get_field('carpro_dont_send_orders','option')):
 
-        $_FAILURE = false;
+	        $_DATA = self::DOCALL($_ENDPOINT, $_DATA_TO_POST);
 
-        if($_DATA['status'] == 'success'):
-        	
-        	update_post_meta($_ORDER_ID, 'carpro_reservation_number', $_DATA['resno']);
+	        $_FAILURE = false;
 
-        	CARPRO_LOG::log('CARPRO RES SUCCESS: '.$_DATA['resno'].' ('.$_ORDER_ID.')');
+	        if(isset($_DATA['status']) && $_DATA['status'] == 'success'):
+	        	
+	        	update_post_meta($_ORDER_ID, 'carpro_reservation_number', $_DATA['resno']);
 
-        else:
+	        	CARPRO_LOG::log('CARPRO RES SUCCESS: '.$_DATA['resno'].' ('.$_ORDER_ID.')');
 
-        	update_post_meta($_ORDER_ID, 'carpro_error', $_DATA['error']);
+	        else:
 
-        	$_FAILURE = true;
+	        	update_post_meta($_ORDER_ID, 'carpro_error', $_DATA['error']);
 
-        	CARPRO_LOG::log('CARPRO RES ERROR: '.$_DATA['error'].' ('.$_ORDER_ID.')');
+	        	$_FAILURE = true;
 
-        endif;
+	        	CARPRO_LOG::log('CARPRO RES ERROR: '.$_DATA['error'].' ('.$_ORDER_ID.')');
 
-        update_post_meta($_ORDER_ID, 'carpro_reservation_return', $_DATA);
+	        endif;
+
+	        update_post_meta($_ORDER_ID, 'carpro_reservation_return', $_DATA);
 
 
-        /* DO WOO EMAIL NOTIFICATIONS */
-        $_WOO_EMAILS = WC()->mailer()->get_emails();
-        $_WOO_EMAILS['WC_Email_New_Order']->trigger( $_ORDER_ID );
-        $_WOO_EMAILS['WC_Email_Customer_Completed_Order']->trigger( $_ORDER_ID );
+	        /* DO WOO EMAIL NOTIFICATIONS */
+	        $_WOO_EMAILS = WC()->mailer()->get_emails();
+	        $_WOO_EMAILS['WC_Email_New_Order']->trigger( $_ORDER_ID );
+	        $_WOO_EMAILS['WC_Email_Customer_Completed_Order']->trigger( $_ORDER_ID );
 
-        if($_FAILURE):
+	        if($_FAILURE):
 
-        	self::DOFAILUREEMAIL($_ORDER_ID, $_PARAMS, $_DATA['error']);
+	        	self::DOFAILUREEMAIL($_ORDER_ID, $_PARAMS, $_DATA['error']);
 
-        endif;
+	        endif;
+
+	    endif;
 
         CARPRO_HELPERS::CLEAR_CARPRO();
 
@@ -304,6 +314,9 @@ class CARPRO{
 
 		switch($_TYPE):
 			case "admin":
+
+				if(is_array($_ERROR)): $_ERROR = implode(" ", $_ERROR); endif;
+
 				$_TITLE = 'CARPRO ERROR';
 				$_SUBJECT = 'CARPRO RESERVATION ERROR ('.$_ORDER_ID.'): '.$_ERROR;
 
@@ -374,7 +387,7 @@ class CARPRO{
 	/*
 	DO AVAILABILITY
 	*/
-	public static function DOAVAILABLILITY($_PARAMS){
+	public static function DOAVAILABLILITY($_PARAMS, $_USER = false){
 
 		CARPRO_HELPERS::CLEAR_CARPRO();
 
@@ -385,6 +398,8 @@ class CARPRO{
 		if(!isset($_PARAMS['InBranch'])):
 			$_PARAMS['InBranch'] = $_PARAMS['OutBranch'];
 		endif;
+
+		$_PARAMS = apply_filters('NL_CARPRO_FILTER_AVAILABILITY_PARAMS', $_PARAMS, $_USER);
 
 		$_DATA = self::DOCALL($_ENDPOINT, $_PARAMS);
 
@@ -402,17 +417,19 @@ class CARPRO{
 
 					$_HAS_RATES = false;
 
-					if(is_array($_VEHICLE['rates']) && count($_VEHICLE['rates']) > 0):
+					if(isset($_VEHICLE['rates']) && is_array($_VEHICLE['rates']) && count($_VEHICLE['rates']) > 0):
 
 						foreach($_VEHICLE['rates'] as $_KM => $_R):
 
-							if(is_array($_R['rates']) && count($_R['rates']) > 0):
+							if(isset($_R['rates']) && is_array($_R['rates']) && count($_R['rates']) > 0):
 								$_HAS_RATES = true;
 							endif;
 
 						endforeach;
 
 					endif;
+
+					$_HAS_RATES = apply_filters('NL_CARPRO_FILTER_VEHICLE_HAS_RATES', $_HAS_RATES, $_CODE, $_VEHICLE);
 
 					$_ONLINE_ITEM_AVAILABLE = CARPRO_HELPERS::IS_AVAILABLE($_CODE);
 
@@ -455,6 +472,8 @@ class CARPRO{
 			WC()->session->set('carpro_days', $_SOLD_DAYS);
 
 			WC()->session->__unset('carpro_nothing_found');
+
+			do_action('NL_CARPRO_ACTION_DOAVAILABLILITY_AFTER', $_PARAMS);
 
 		else:
 

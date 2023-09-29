@@ -92,7 +92,7 @@ class CARPRO_HELPERS{
 			$_QUERY = get_queried_object();
 		endif;
 
-		if($_QUERY->post_type == 'page'):
+		if(is_a($_QUERY, 'WP_Post') && $_QUERY->post_type == 'page'):
 
 			$_CHECK = get_permalink($_QUERY);
 
@@ -263,7 +263,8 @@ class CARPRO_HELPERS{
 			$_CODE = get_field('carpro_branch_code', $_BRANCH);
 			$_TITLE = $_BRANCH->post_title;
 
-			$_PROVINCE = reset(wp_get_post_terms($_BRANCH->ID, 'province'));
+			$_PROVINCE_ON_BRANCH = wp_get_post_terms($_BRANCH->ID, 'province');
+			$_PROVINCE = reset($_PROVINCE_ON_BRANCH);
 			$_PROVINCE = $_PROVINCE->name;
 
 			$_SELECTION[$_PROVINCE][$_CODE] = $_TITLE;
@@ -418,6 +419,8 @@ class CARPRO_HELPERS{
 	public static function VEHICLE_TEXT($_SKU){
 
 		$_TEXT = array();
+		$_STANDALONE = array();
+		$_EXCLUDES = array();
 
 		$_POST_ITEM = false;
 
@@ -428,9 +431,21 @@ class CARPRO_HELPERS{
 
 					$_POST_ITEM     = $_DATA['post'];
 
-					$_EXTRAS_ONCE 	= $_DATA['vehicle']['extras']['once'];
-					$_EXTRAS_DAILY 	= $_DATA['vehicle']['extras']['daily'];
-					$_FEES 			= $_DATA['vehicle']['fees'];
+					$_EXTRAS_ONCE = array();
+					$_EXTRAS_DAILY = array();
+					$_FEES = array();
+
+					if(isset($_DATA['vehicle']['extras']['once']) && is_array($_DATA['vehicle']['extras']['once'])):
+						$_EXTRAS_ONCE 	= $_DATA['vehicle']['extras']['once'];
+					endif;
+
+					if(isset($_DATA['vehicle']['extras']['daily']) && is_array($_DATA['vehicle']['extras']['daily'])):
+						$_EXTRAS_DAILY 	= $_DATA['vehicle']['extras']['daily'];
+					endif;
+
+					if(isset($_DATA['vehicle']['fees']) && is_array($_DATA['vehicle']['fees'])):
+						$_FEES 	= $_DATA['vehicle']['fees'];
+					endif;
 
 					foreach(get_field('vehicle_text_builder', 'option') as $_VTB):
 
@@ -438,7 +453,12 @@ class CARPRO_HELPERS{
 
 							if(trim(strtolower($_VTB['code'])) == trim(strtolower($_CODE))):
 								$_VALUE = $_EXTRA['amt'];
-								$_TEXT[] = str_replace('{{VALUE}}', wc_price($_VALUE), $_VTB['text']);
+
+								if($_VTB['type'] == 'excludes'):
+									$_EXCLUDES[] = str_replace('{{VALUE}}', wc_price($_VALUE), $_VTB['text']);
+								else:
+									$_STANDALONE[] = str_replace('{{VALUE}}', wc_price($_VALUE), $_VTB['text']);
+								endif;
 							endif;
 
 						endforeach;
@@ -447,7 +467,12 @@ class CARPRO_HELPERS{
 
 							if(trim(strtolower($_VTB['code'])) == trim(strtolower($_CODE))):
 								$_VALUE = $_EXTRA['total'];
-								$_TEXT[] = str_replace('{{VALUE}}', wc_price($_VALUE), $_VTB['text']);
+
+								if($_VTB['type'] == 'excludes'):
+									$_EXCLUDES[] = str_replace('{{VALUE}}', wc_price($_VALUE), $_VTB['text']);
+								else:
+									$_STANDALONE[] = str_replace('{{VALUE}}', wc_price($_VALUE), $_VTB['text']);
+								endif;
 							endif;
 
 						endforeach;
@@ -456,14 +481,35 @@ class CARPRO_HELPERS{
 
 							if(trim(strtolower($_VTB['code'])) == trim(strtolower($_CODE))):
 								$_VALUE = $_EXTRA['total'];
-								$_TEXT[] = str_replace('{{VALUE}}', wc_price($_VALUE), $_VTB['text']);
+
+								if($_VTB['type'] == 'excludes'):
+									$_EXCLUDES[] = str_replace('{{VALUE}}', wc_price($_VALUE), $_VTB['text']);
+								else:
+									$_STANDALONE[] = str_replace('{{VALUE}}', wc_price($_VALUE), $_VTB['text']);
+								endif;
 							endif;
 
 						endforeach;
 
-
-
 					endforeach;
+
+					$_FIRST_RATE = reset($_DATA['vehicle']['rates']);
+
+					if(isset($_FIRST_RATE['dropoff']) && $_FIRST_RATE['dropoff'] > 0):
+						$_EXCLUDES[] = "Once off One Way Fee (".wc_price($_FIRST_RATE['dropoff']).")";
+					endif;
+
+					if(count($_EXCLUDES) > 0):
+
+						$_TEXT[] = "<strong>Excludes:</strong> ".implode("; ", $_EXCLUDES).'.';
+
+					endif;
+
+					if(count($_STANDALONE) > 0):
+
+						$_TEXT[] = implode(". ", $_STANDALONE).'.';
+
+					endif;
 
 				endif;
 
@@ -622,7 +668,7 @@ class CARPRO_HELPERS{
 										data-id="<?php echo $product->get_id(); ?>" 
 										data-code="<?php echo $_KMR['code']; ?>" 
 										data-total="<?php echo $_KMR['total']; ?>" 
-										data-pd="<?php echo get_woocommerce_currency_symbol().number_format($_KMR['pd'], 2, ".", ""); ?>" 
+										data-pd="<?php echo get_woocommerce_currency_symbol().number_format($_KMR['pd'], 2, ".", ","); ?>" 
 										data-km="<?php echo $_KM; ?>"
 										data-owf="<?php echo $_OWF; ?>" 
 										type="radio" /> <?php echo $_KMR['title']; ?>
@@ -653,7 +699,7 @@ class CARPRO_HELPERS{
 
 						<div class="col-12">
 							<div class="carproVehicleRateInformation">
-								<span class="carpro_perday"><span class="value"><?php echo get_woocommerce_currency_symbol().number_format($_FIRST_RATE['pd'], 2, ".", ""); ?></span> <span class="text">per day</span></span>
+								<span class="carpro_perday"><span class="value"><?php echo wc_price($_FIRST_RATE['pd']); ?></span> <span class="text">per day</span></span>
 							</div>
 						</div>
 
@@ -706,8 +752,16 @@ class CARPRO_HELPERS{
 			WC()->session->__unset('carpro_selected_daily_extras');		
 			WC()->session->__unset('carpro_nothing_found');
 			WC()->session->__unset('carpro_one_way_fee');
+			WC()->session->__unset('carpro_billing_id_type');
+			WC()->session->__unset('carpro_billing_id_value');
+			WC()->session->__unset('carpro_license_number');
+			WC()->session->__unset('carpro_license_expiry');
+			WC()->session->__unset('carpro_arrival_flight_number');
+			WC()->session->__unset('carpro_payment_type');
 
 			WC()->cart->empty_cart();
+
+			do_action('NL_CARPRO_ACTION_CLEAR_CARPRO');
 			
 		endif;
 
@@ -735,6 +789,8 @@ class CARPRO_HELPERS{
 			WC()->session->__unset('carpro_selected_rate');
 			WC()->session->__unset('carpro_selected_once_extras');
 			WC()->session->__unset('carpro_selected_daily_extras');	
+
+			do_action('NL_CARPRO_ACTION_CLEAR_CART');
 
 		endif;	
 
@@ -790,7 +846,7 @@ class CARPRO_HELPERS{
 
 
 
-
+	/* CUSTOM BRANCH SORT */
 	public static function CUSTOM_BRANCH_SORT(){
 
 		$_PICKUP_BRANCH = WC()->session->get('carpro_out_branch');
@@ -817,6 +873,92 @@ class CARPRO_HELPERS{
 		return false;
 
 
+	}
+
+
+
+
+
+
+
+
+
+	/* BRANCH CUSTOM EMAIL CONTENT */
+	public static function BRANCH_CUSTOM_EMAIL_CONTENT($_ORDER){
+
+		$_THE_ITEM_TO_RETURN = false;
+
+		if(get_post_meta($_ORDER->get_id(), 'carpro_out_branch', true)):
+
+			$_BRANCH_CODE = get_post_meta($_ORDER->get_id(), 'carpro_out_branch', true);
+			$_BRANCH_OBJ = self::GET_BRANCH_FROM_CODE($_BRANCH_CODE);
+
+			$_OPTIONS = get_field('branch_custom_email_content','option');
+
+			foreach($_OPTIONS as $_OPT):
+
+				 if(is_a($_OPT['branch'], 'WP_Post')):
+
+				    if($_OPT['branch']->ID == $_BRANCH_OBJ->ID):
+				      $_THE_ITEM_TO_RETURN = $_OPT['content'];
+				    endif;
+
+				  else:
+
+				    if((int)$_OPT['branch'] == $_BRANCH_OBJ->ID):
+				      $_THE_ITEM_TO_RETURN = $_OPT['content'];
+				    endif;
+
+				  endif;
+
+			endforeach;
+
+		endif;
+
+		return $_THE_ITEM_TO_RETURN;
+	}
+
+
+
+
+
+
+
+
+
+	/* BRANCH CUSTOM EMAIL RECIPIENT */
+	public static function BRANCH_CUSTOM_EMAIL_RECIPIENT($_ORDER){
+
+		$_THE_ITEM_TO_RETURN = false;
+
+		if(get_post_meta($_ORDER->get_id(), 'carpro_out_branch', true)):
+
+			$_BRANCH_CODE = get_post_meta($_ORDER->get_id(), 'carpro_out_branch', true);
+			$_BRANCH_OBJ = self::GET_BRANCH_FROM_CODE($_BRANCH_CODE);
+
+			$_OPTIONS = get_field('branch_custom_email_recipients','option');
+
+			foreach($_OPTIONS as $_OPT):
+
+				if(is_a($_OPT['branch'], 'WP_Post')):
+
+				    if($_OPT['branch']->ID == $_BRANCH_OBJ->ID):
+				      $_THE_ITEM_TO_RETURN = $_OPT['email'];
+				    endif;
+
+				  else:
+
+				    if((int)$_OPT['branch'] == $_BRANCH_OBJ->ID):
+				      $_THE_ITEM_TO_RETURN = $_OPT['email'];
+				    endif;
+
+				  endif;
+
+			endforeach;
+
+		endif;
+
+		return $_THE_ITEM_TO_RETURN;
 	}
 
 

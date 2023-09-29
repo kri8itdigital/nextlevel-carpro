@@ -166,7 +166,11 @@ class Nextlevel_Carpro {
 
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'admin_menu');
 
-		$this->loader->add_filter( 'http_request_timeout', $plugin_admin, 'http_request_timeout');
+		$this->loader->add_filter( 'http_request_timeout', $plugin_admin, 'http_request_timeout');	
+
+		$this->loader->add_filter( 'wc_session_expiring', $plugin_admin, 'wc_session_expiring', 999,1);	
+		$this->loader->add_filter( 'wc_session_expiration', $plugin_admin, 'wc_session_expiration', 999,1);
+		$this->loader->add_filter( 'woocommerce_get_cart_url', $plugin_admin, 'woocommerce_get_cart_url', 999,1);		
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles', 999);
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts', 999);
@@ -175,6 +179,8 @@ class Nextlevel_Carpro {
 		$this->loader->add_action( 'init', $plugin_admin, 'custom_fields' );
 		$this->loader->add_action( 'init', $plugin_admin, 'post_types' );
 		$this->loader->add_action( 'init', $plugin_admin, 'setup_cron_schedules', 999);	
+
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'admin_init' );
 
 
 		$this->loader->add_action( 'carpro_clean_logs_action', $plugin_admin, 'carpro_clean_logs_action');
@@ -203,7 +209,6 @@ class Nextlevel_Carpro {
 		$this->loader->add_action('wp_ajax_nopriv_carpro_ajax_branch_restricted_dates', $plugin_admin, 'carpro_ajax_branch_restricted_dates');
 
 		$this->loader->add_action( 'woocommerce_checkout_update_order_meta', $plugin_admin, 'woocommerce_checkout_update_order_meta', 999, 1);
-		$this->loader->add_action( 'woocommerce_thankyou_order_id', $plugin_admin, 'woocommerce_thankyou_order_id', 10, 1);
 		$this->loader->add_action( 'woocommerce_email', $plugin_admin, 'woocommerce_email', 999, 1);
 
 		$this->loader->add_filter( 'woocommerce_payment_complete_order_status', $plugin_admin, 'woocommerce_payment_complete_order_status', 999, 1);
@@ -212,6 +217,13 @@ class Nextlevel_Carpro {
 		$this->loader->add_action( 'woocommerce_email_order_details', $plugin_admin, 'woocommerce_email_order_details', 2, 2);
 		$this->loader->add_action( 'woocommerce_email_order_meta', $plugin_admin, 'woocommerce_email_order_meta', 999, 2);
 		$this->loader->add_filter( 'woocommerce_order_number', $plugin_admin, 'woocommerce_order_number', 999, 1);
+
+		//$this->loader->add_filter( 'woocommerce_email_recipient_new_order', $plugin_admin, 'woocommerce_email_recipient_new_order', 999, 3);
+
+		
+
+		$this->loader->add_filter( 'woocommerce_add_notice', $plugin_admin, 'woocommerce_add_notice', 999, 1);
+
 
 
 		$this->loader->add_action( 'wp_logout', $plugin_admin, 'wp_logout', 999, 1);
@@ -266,7 +278,6 @@ class Nextlevel_Carpro {
 
 		$this->loader->add_action( 'woocommerce_cart_calculate_fees', $plugin_public, 'woocommerce_cart_calculate_fees', 999);
 
-		$this->loader->add_action( 'woocommerce_before_thankyou', $plugin_public, 'woocommerce_before_checkout_form', 999);
 		$this->loader->add_action( 'woocommerce_before_checkout_form', $plugin_public, 'woocommerce_before_checkout_form', 999);
 		$this->loader->add_action( 'woocommerce_checkout_create_order_line_item', $plugin_public, 'woocommerce_checkout_create_order_line_item', 999, 4);
 
@@ -294,6 +305,14 @@ class Nextlevel_Carpro {
 
 
 		$this->loader->add_filter('woocommerce_order_item_permalink', $plugin_public, 'woocommerce_order_item_permalink', 999, 3);
+
+		$this->loader->add_filter('woocommerce_cart_item_removed_message', $plugin_public, 'woocommerce_cart_item_removed_message', 999, 1);
+
+		$this->loader->add_filter('woocommerce_order_button_text', $plugin_public, 'woocommerce_order_button_text', 999, 1);
+
+		$this->loader->add_action( 'template_redirect', $plugin_public, 'template_redirect', 999, 1 );
+
+		$this->loader->add_filter('K8_ADUMO_FILTER_RETRY_URL_NEW_CARD', $plugin_public, 'K8_ADUMO_FILTER_RETRY_URL_NEW_CARD', 999, 1);
 
 	}
 

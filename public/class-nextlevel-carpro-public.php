@@ -144,8 +144,13 @@ class Nextlevel_Carpro_Public {
 			$_LANGUAGE = get_option('WPLANG');
 		endif;
 
+		$_DEFAULT_COUNTRY = get_option('woocommerce_default_country');
+		$_DEFAULT_COUNTRY = explode(":", $_DEFAULT_COUNTRY);
+		$_DEFAULT_COUNTRY = strtolower($_DEFAULT_COUNTRY[0]);
+
 		$_ARRAY_OF_ARGS = array(
 			'ajax_url' 					=> get_bloginfo('url').'/wp-admin/admin-ajax.php',
+			'logged_in_user_id'         => get_current_user_id(),
 			'booking_lead_time' 		=> get_field('booking_lead_days','option'),
 			'booking_default' 			=> get_field('booking_default_day','option'),
 			'booking_minimum' 			=> get_field('booking_minimum_length','option'),
@@ -154,6 +159,7 @@ class Nextlevel_Carpro_Public {
 			'multiple_map'				=> get_field('multiple_map_height','option'),
 			'map_marker'				=> get_field('map_marker_image','option'),
 			'telephoneutil'         	=> plugin_dir_url( __FILE__ ) . 'js/utils.js',
+			'telephoneinitial'         	=> $_DEFAULT_COUNTRY,
 			'booking_session_title' 	=> get_field('booking_session_expired_title','option'),
 			'booking_session_text' 		=> get_field('booking_session_expired_text','option'),
 			'booking_session_button' 	=> get_field('booking_session_button_text','option'),
@@ -457,11 +463,11 @@ class Nextlevel_Carpro_Public {
 
 					<div class="row">
 
-						<div class="col-xl-5  col-md-12">
+						<div class="col-xl-4  col-md-12">
 
 							<div class="row">
 
-								<div id="SEARCHFORMLOCATIONCONTAINER" class="col-xl-8  col-md-6">
+								<div id="SEARCHFORMLOCATIONCONTAINER" class="col-xl-7  col-md-6">
 									<div><label id="SEARCHFORMLABEL" data-pick="Pick-up Location" data-drop="Pick-up & Drop-off Location">Pick-up & Drop-off Location</label></div>
 										<select data-minimum-results-for-search="Infinity" name="OutBranch" id="carproOutBranch">
 										
@@ -476,7 +482,7 @@ class Nextlevel_Carpro_Public {
 										</select>							
 								</div>
 
-								<div id="SEARCHFORMLOCATIONDROPOFF" class="col-xl-4  col-md-6">
+								<div id="SEARCHFORMLOCATIONDROPOFF" class="col-xl-5  col-md-6">
 									<div class="relative"><label id="SEARCHFORMDROPLABEL">Drop-off Location <span id="SEARCHFORMCLOSECHECKBOX"> X </span></label> </div>
 									<div id="SEARCHFORMRELATIVEBOX">
 									<select data-minimum-results-for-search="Infinity" name="InBranch" id="carproInBranch">
@@ -518,8 +524,8 @@ class Nextlevel_Carpro_Public {
 							</div>
 						</div>
 
-						<div id="SEARCHFORMACTION" class="col-xl-1">
-							<a id="carproPerformSearch">Search</a>
+						<div id="SEARCHFORMACTION" class="col-xl-2">
+							<a id="carproPerformSearch">SEARCH FOR YOUR VEHICLE</a>
 						</div>
 
 					</div>
@@ -556,6 +562,8 @@ class Nextlevel_Carpro_Public {
 		endif;
 
 		ob_start();
+
+		do_action('woocommerce_before_cart');
 
 		if(isset(WC()->session) && WC()->session->get('carpro_includes') && count(WC()->session->get('carpro_includes')) > 0):
 			$_PRODUCT_ARGS = array(
@@ -732,7 +740,7 @@ class Nextlevel_Carpro_Public {
 
 		if(WC()->session->get('carpro_selected_vehicle')):
 
-			$_ARRAY_OF_LINKS[] = '<a class="top_bar_item top_finalise" href="'.wc_get_checkout_url().'">Finalise Booking</a>';
+			$_ARRAY_OF_LINKS[] = '<a class="top_bar_item top_finalise" href="'.wc_get_checkout_url().'">Finalise Rental</a>';
 
 		endif;
 
@@ -767,7 +775,7 @@ class Nextlevel_Carpro_Public {
 
 	public function carpro_timer(){
 
-		if(get_field('enable_timer', 'option')):
+		if(get_field('enable_timer', 'option') && get_field('show_timer', 'option')):
 
 			ob_start();
 			?>
@@ -920,60 +928,64 @@ class Nextlevel_Carpro_Public {
 	public function carpro_extra_option_fields($_CHECKOUT){
 
 		$_CART_ITEMS = WC()->cart->get_cart();
-		$_FIRST = reset($_CART_ITEMS);
-		$_SKU = $_FIRST['data']->get_sku();
 
-		$_DESCRIPTIONS = get_field('extra_tooltips', 'option');
+		if(is_array($_CART_ITEMS) && count($_CART_ITEMS) > 0):
+			$_FIRST = reset($_CART_ITEMS);
+			$_SKU = $_FIRST['data']->get_sku();
+
+			$_DESCRIPTIONS = get_field('extra_tooltips', 'option');
 
 
-		if(isset(WC()->session) && WC()->session->get('carpro_available_extras_once')):
-			$_ONCE = WC()->session->get('carpro_available_extras_once');
-			echo '<div class="mobilecheckoutblock" id="checkout_extras_once_off"><h3>' . __('Once Off Extras') . '</h2>';
+			if(isset(WC()->session) && WC()->session->get('carpro_available_extras_once')):
+				$_ONCE = WC()->session->get('carpro_available_extras_once');
+				echo '<div class="mobilecheckoutblock" id="checkout_extras_once_off"><h3>' . __('Once Off Extras') . '</h2>';
 
-				foreach($_ONCE as $_KEY => $_DATA):
+					foreach($_ONCE as $_KEY => $_DATA):
 
-					$_DESCRIPTION = false;
+						$_DESCRIPTION = false;
 
-					foreach($_DESCRIPTIONS as $_DESC):
+						foreach($_DESCRIPTIONS as $_DESC):
 
-						if($_DESC['code'] == $_KEY):
-							$_DESCRIPTION = $_DESC['text'];
+							if($_DESC['code'] == $_KEY):
+								$_DESCRIPTION = $_DESC['text'];
+							endif;
+
+						endforeach;
+
+
+						if(isset($_DATA['perday'])):
+							$_VALUE_TO_USE = $_DATA['perday'];
+						else:
+							$_VALUE_TO_USE = $_DATA['total'];
+						endif;
+
+
+						if($_DESCRIPTION):
+
+						 woocommerce_form_field( 'carpro_extra_'.$_KEY, array(
+					        'type'          => 'checkbox',
+					        'class'         => array('carpro-extra-checkbox form-row-wide'),
+					        'label'         => __($_DATA['title'].' <small>Charged at '.wc_price($_VALUE_TO_USE).'</small>'),
+					        'description'   => $_DESCRIPTION
+					        ), CARPRO_HELPERS::ISEXTRASELECTED($_KEY));
+
+						else:
+
+
+							woocommerce_form_field( 'carpro_extra_'.$_KEY, array(
+					        'type'          => 'checkbox',
+					        'class'         => array('carpro-extra-checkbox form-row-wide'),
+					        'label'         => __($_DATA['title'].' <small>Charged at '.wc_price($_VALUE_TO_USE).'</small>')
+					        ), CARPRO_HELPERS::ISEXTRASELECTED($_KEY));
+
+
 						endif;
 
 					endforeach;
 
+				echo '</div>';
 
-					if(isset($_DATA['perday'])):
-						$_VALUE_TO_USE = $_DATA['perday'];
-					else:
-						$_VALUE_TO_USE = $_DATA['total'];
-					endif;
-
-
-					if($_DESCRIPTION):
-
-					 woocommerce_form_field( 'carpro_extra_'.$_KEY, array(
-				        'type'          => 'checkbox',
-				        'class'         => array('carpro-extra-checkbox form-row-wide'),
-				        'label'         => __($_DATA['title'].' <small>Charged at '.wc_price($_VALUE_TO_USE).'</small>'),
-				        'description'   => $_DESCRIPTION
-				        ), CARPRO_HELPERS::ISEXTRASELECTED($_KEY));
-
-					else:
-
-
-						woocommerce_form_field( 'carpro_extra_'.$_KEY, array(
-				        'type'          => 'checkbox',
-				        'class'         => array('carpro-extra-checkbox form-row-wide'),
-				        'label'         => __($_DATA['title'].' <small>Charged at '.wc_price($_VALUE_TO_USE).'</small>')
-				        ), CARPRO_HELPERS::ISEXTRASELECTED($_KEY));
-
-
-					endif;
-
-				endforeach;
-
-			echo '</div>';
+			endif;
 
 		endif;
 
@@ -1087,13 +1099,13 @@ class Nextlevel_Carpro_Public {
 		    	'type'          => 'text',
 		    	'class'         => array('carpro-license-number form-row-wide'),
 		    	'label'         => __('License Number'),
-		    ), $_CHECKOUT->get_value( 'license_number' ));
+		    ), WC()->session->get('carpro_license_number'));
 
 			woocommerce_form_field( 'license_expiry', array(
 		    	'type'          => 'text',
 		    	'class'         => array('carpro-license-expiry form-row-wide'),
 		    	'label'         => __('License Expiry'),
-		    ), $_CHECKOUT->get_value( 'license_expiry' ));
+		    ), WC()->session->get('carpro_license_expiry'));
 
 		echo '</div>';
 
@@ -1103,7 +1115,7 @@ class Nextlevel_Carpro_Public {
 		    	'type'          => 'text',
 		    	'class'         => array('arrival-flight-number form-row-wide'),
 		    	'label'         => __('Arrival Flight Number'),
-		    ), $_CHECKOUT->get_value( 'arrival_flight_number' ));
+		    ), WC()->session->get('carpro_arrival_flight_number'));
 
 		echo '</div>';
 
@@ -1134,15 +1146,20 @@ class Nextlevel_Carpro_Public {
 					$_BILLING_ARRAY[$_PT['percentage'].'::'.$_PT['label']] = $_PT['label'];
 				endforeach;
 
-				echo '<div class="mobilecheckoutblock"  id="checkout_payment"><h3>' . __('Payment Type') . '</h2>';
+				$_ARRAY_KEYS = array_keys($_BILLING_ARRAY);
+				$_DEFAULT = array_shift($_ARRAY_KEYS);
 
-					woocommerce_form_field( 'payment_type', array(
-				    	'type'          => 'select',
+				echo '<div class="mobilecheckoutblock"  id="checkout_payment"><h3>' . __('Payment') . '</h2>';
+
+					woocommerce_form_field( 'carpro_payment_type', array(
+				    	'type'          => 'radio',
 				    	'required'  	=> true,
 				    	'options'		=> $_BILLING_ARRAY,
-				    	'class'         => array('payment-type form-row-wide'),
+				    	'class'         => array('carpro-payment-type-radio payment-type form-row-wide'),
 				    	'label'         => __('Payment Type'),
-				    ), WC()->session->get('carpro_deposit_type'));
+				    	'label_class'   => 'payment-radio-label',
+				    	'default'       => $_DEFAULT
+				    ), WC()->session->get('carpro_payment_type'));
 
 				echo '</div>';
 
@@ -1193,7 +1210,7 @@ class Nextlevel_Carpro_Public {
 	public function woocommerce_account_orders_columns($_LINKS){
 		
 		$_LINKS = array(
-			'order-number'  => __( 'Booking', 'woocommerce' ),
+			'order-number'  => __( 'Reservation', 'woocommerce' ),
 			'order-date'    => __( 'Date', 'woocommerce' ),
 			'order-total'   => __( 'Rental Sum', 'woocommerce' ),
 			'order-actions' => __( 'Actions', 'woocommerce' ),
@@ -1260,60 +1277,30 @@ class Nextlevel_Carpro_Public {
 		  }
 		</style>
 
-		
+
+
+		<style type="text/css">
+			#carproLoader{
+				background-color: <?php the_field('overlay_background_colour', 'option'); ?>;			
+			}
+
+			.jconfirm-bg{
+				background-color: <?php the_field('overlay_background_colour', 'option') ?> !important;
+				opacity: 1 !important; 		
+			}
+		</style>
+
+		<div id="carproLoader">
+			<div class="carproLoaderText">
+				<img src="<?php the_field('overlay_loading_gif', 'option'); ?>" />
+				<span>LOADING</span>
+			</div>
+		</div>
+	
 	
 
 		<?php
 
-
-		if(is_plugin_active('elementor-pro/elementor-pro.php')):
-
-			?>
-
-			<style type="text/css">
-				#carproLoader{
-					background-color: <?php the_field('overlay_background_colour', 'option'); ?>;		
-				}
-
-				.jconfirm-bg{
-					background-color: <?php the_field('overlay_background_colour', 'option') ?> !important;
-					opacity: 1 !important; 		
-				}
-
-				
-			</style>
-
-			<div id="carproLoader">
-				<div class="carproLoaderText">
-					<i class="fa-solid fa-car"></i>
-					<span>LOADING</span>
-				</div>
-			</div>
-
-			<?php
-
-		else:
-
-			?>
-
-			<style type="text/css">
-				#carproLoader{
-					background-color: <?php the_field('overlay_background_colour', 'option'); ?>;
-					background-image:url( <?php the_field('overlay_loading_gif', 'option'); ?>);				
-				}
-
-				.jconfirm-bg{
-					background-color: <?php the_field('overlay_background_colour', 'option') ?> !important;
-					opacity: 1 !important; 		
-				}
-			</style>
-
-			<div id="carproLoader"></div>
-
-			<?php
-
-
-		endif;
 	}
 
 
@@ -1459,6 +1446,7 @@ class Nextlevel_Carpro_Public {
 
 			$_SELECTED_ONCE = array();
 			$_SELECTED_DAILY = array();
+
 			WC()->session->__unset('carpro_selected_daily_extras');
 			WC()->session->__unset('carpro_selected_once_extras');
 
@@ -1471,6 +1459,36 @@ class Nextlevel_Carpro_Public {
 			endif; 
 
 			parse_str( $_POST['post_data'], $_CO_FIELDS );
+
+			if(isset($_CO_FIELDS['billing_identification_type'])):
+
+				WC()->session->set('carpro_billing_id_type', $_CO_FIELDS['billing_identification_type']);
+
+			endif;
+
+			if(isset($_CO_FIELDS['billing_id_passport'])):
+
+				WC()->session->set('carpro_billing_id_value', $_CO_FIELDS['billing_id_passport']);
+
+			endif;
+
+			if(isset($_CO_FIELDS['license_number'])):
+
+				WC()->session->set('carpro_license_number', $_CO_FIELDS['license_number']);
+
+			endif;
+
+			if(isset($_CO_FIELDS['license_expiry'])):
+
+				WC()->session->set('carpro_license_expiry', $_CO_FIELDS['license_expiry']);
+
+			endif;
+
+			if(isset($_CO_FIELDS['arrival_flight_number'])):
+
+				WC()->session->set('carpro_arrival_flight_number', $_CO_FIELDS['arrival_flight_number']);
+
+			endif;
 
 			foreach($_CO_FIELDS as $_KEY => $_VALUE):
 
@@ -1584,9 +1602,11 @@ class Nextlevel_Carpro_Public {
 		if ( isset( $_POST['post_data'] ) ):
 			parse_str( $_POST['post_data'], $_CO_FIELDS );
 
-			if(isset($_CO_FIELDS['payment_type'])):	
+			if(isset($_CO_FIELDS['carpro_payment_type'])):	
 
-				$_DATA = explode("::", $_CO_FIELDS['payment_type']);
+
+				$_DATA = explode("::", $_CO_FIELDS['carpro_payment_type']);
+				WC()->session->set('carpro_payment_type', $_CO_FIELDS['payment_type']);
 				WC()->session->set('carpro_deposit_type', (float)$_DATA[0]);
 				WC()->session->set('carpro_deposit_title', $_DATA[1]);
 				WC()->session->set('carpro_deposit_percentage', $_DATA[0].'%');
@@ -1596,8 +1616,16 @@ class Nextlevel_Carpro_Public {
 				$_DEP_TITLE 	= $_DATA[1];
 
 				$_ADD = true;
+
+			else:
+
+				WC()->session->__unset('carpro_payment_type');
+				WC()->session->__unset('carpro_deposit_type');
+				WC()->session->__unset('carpro_deposit_title');
+				WC()->session->__unset('carpro_deposit_percentage');
 				
 			endif; 
+
 
 		else:
 
@@ -1614,7 +1642,7 @@ class Nextlevel_Carpro_Public {
 
 		if($_ADD):
 
-			$_PERCENT = 100 - $_DEP_VAL;
+			$_PERCENT = 100 - (int)$_DEP_VAL;
 
 			$_AMT = 0;
 			$_AMT = (($_PERCENT / 100) * $_CART_TOTAL);
@@ -1625,48 +1653,6 @@ class Nextlevel_Carpro_Public {
 
 			WC()->session->set('carpro_deposit_amount', $_DAMT);
 			WC()->cart->add_fee( $_DEP_TITLE, $_AMT*-1, true, '' );
-
-			/*
-			switch($_DEP):
-
-				case "50%":
-					$_TITLE = '50% Deposit';
-					$_PERCENT = 50;
-					$_AMT = (($_PERCENT / 100) * $_CART_TOTAL);
-					$_DAMT = $_CART_TOTAL-$_AMT;
-					$_AMT = number_format($_AMT, 2, ".", "");
-				break;
-
-				case "25%":
-					$_TITLE = '25% Deposit';
-					$_PERCENT = 75;
-					$_AMT = (($_PERCENT / 100) * $_CART_TOTAL);
-					$_DAMT = $_CART_TOTAL-$_AMT;
-					$_AMT = number_format($_AMT, 2, ".", "");
-				break;
-
-				case "0%":
-					$_TITLE = '0% Deposit';
-					$_PERCENT = 100;
-					$_AMT = (($_PERCENT / 100) * $_CART_TOTAL);
-					$_DAMT = $_CART_TOTAL-$_AMT;
-					$_AMT = number_format($_AMT, 2, ".", "");
-				break;
-
-				default:
-					$_AMT = 0;
-					$_OUT = 0;
-					$_DAMT = 0;
-				break;
-
-			endswitch;
-
-			WC()->session->set('carpro_deposit_amount', $_DAMT);
-
-			if($_AMT > 0):
-				WC()->cart->add_fee( $_TITLE, $_AMT*-1, true, '' );
-			endif;
-			*/
 		endif;
 		
 		
@@ -1806,14 +1792,14 @@ class Nextlevel_Carpro_Public {
 	public function woocommerce_thankyou($_ORDER_ID){
 		CARPRO_HELPERS::CLEAR_CARPRO();
 
-		$_GTM = get_field('datalayer', 'option');
+		if(get_field('enable_dataLayer', 'option')):
 
-		if($_GTM):
+			$_GTM = get_field('datalayer', 'option');
 
-			$_ORDER = wc_get_order($_ORDER_ID);
-			$_OBJ = get_post($_ORDER_ID);
+			if($_GTM):
 
-			if(get_field('carpro_reservation_number', $_OBJ)):
+				$_ORDER = wc_get_order($_ORDER_ID);
+				$_OBJ = get_post($_ORDER_ID);
 
 				$_VEHICLES = $_ORDER->get_items();
 				$_VEHICLE = reset($_VEHICLES);
@@ -1821,65 +1807,52 @@ class Nextlevel_Carpro_Public {
 				$_PRODUCT_ID = $_VEHICLE['product_id'];
 				$_PROD = wc_get_product($_PRODUCT_ID);
 
-				$_RESERVATION_NUMBER 	= get_field('carpro_reservation_number', $_OBJ);
+				/*
+				if(get_field('carpro_reservation_number', $_OBJ)):
+					$_RESERVATION_NUMBER 	= 'CAR-'.get_field('carpro_reservation_number', $_OBJ);
+				else:
+					$_RESERVATION_NUMBER    = 'WOO-'.$_ORDER_ID;
+				endif;
+				*/
+
+				$_RESERVATION_NUMBER    = $_ORDER_ID;				
 				$_TOTAL 				= get_field('rental_amount', $_OBJ);
 				$_VEHICLE_TYPE 			= $_PROD->get_sku();
-				$_VEHICLE_NAME 			= $_PROD->get_name();
+				$_VEHICLE_NAME 			= $_VEHICLE['name'];
 				$_PICKUP_LOCATION 		= get_field('carpro_out_branch', $_OBJ);
-
-				if(!get_field('enable_dataLayer', 'option')):
-					?>
-						<!--
-					<?php
-				endif;
 
 				?>
 
-				<script>
-					window.dataLayer = window.dataLayer || [];
+					<script>
+						window.dataLayer = window.dataLayer || [];
 
-					window.dataLayer.push({
-					  event: 'purchase',
-					  ecommerce: {
-					    currency: 'ZAR',
-					    value: <?php echo $_TOTAL; ?>,
-					    tax: 0.00,
-					    shipping: 0.00,
-					    transaction_id: '<?php echo $_RESERVATION_NUMBER; ?>',
-					    items: [{
-					      item_name: '<?php echo $_VEHICLE_TYPE; ?>',
-					      item_id: <?php echo $_PRODUCT_ID; ?>,
-					      price: <?php echo $_TOTAL; ?>,
-					      quantity: 1
-					    }]
-					  },
-					  enhanced_conversion_data: {
-					      email: '<?php echo $_ORDER->get_billing_email(); ?>',  
-					      phone_number: '<?php echo $_ORDER->get_billing_phone(); ?>',
-					      first_name: '<?php echo $_ORDER->get_billing_first_name(); ?>',
-					      last_name: '<?php echo $_ORDER->get_billing_last_name(); ?>',
-					      street: '<?php echo $_ORDER->get_shipping_address_1(); ?>, <?php echo $_ORDER->get_shipping_address_2(); ?>',
-					      city: '<?php echo $_ORDER->get_shipping_city(); ?>',
-					      region: '<?php echo $_ORDER->get_shipping_state(); ?>',
-					      postal_code: '<?php echo $_ORDER->get_shipping_postcode(); ?>',
-					      country: '<?php echo $_ORDER->get_shipping_country(); ?>'
-					    }
-					});
-				</script>
+						window.dataLayer.push({
+						  'event': 'purchase',
+						  'ecommerce': {
+						    'currency': 'ZAR',
+						    'value': '<?php echo $_TOTAL; ?>',
+						    'tax': '0.00',
+						    'shipping': '0.00',
+						    'transaction_id': '<?php echo $_RESERVATION_NUMBER; ?>',
+						    'items': [{
+						      'item_name': '<?php echo $_VEHICLE_NAME; ?>',
+						      'item_id': '<?php echo $_VEHICLE_TYPE; ?>',
+						      'price': '<?php echo $_TOTAL; ?>',
+						      'quantity': 1
+						    }]
+						  },
+						  'enhanced_conversion_data': {
+						      'email': '<?php echo $_ORDER->get_billing_email(); ?>',  
+						      'phone_number': '<?php echo $_ORDER->get_billing_phone(); ?>'
+						    }
+						});
+					</script>
 
 				<?php
-
-				if(!get_field('enable_dataLayer', 'option')):
-					?>
-						-->
-					<?php
-				endif;
 
 			endif;
 
 		endif;
-
-
 		
 	}
 
@@ -1895,14 +1868,16 @@ class Nextlevel_Carpro_Public {
 	/* CHECKOUT ADD FIELDS */
 	public function woocommerce_checkout_fields($_FIELDS){
 
+
 		$_FIELDS['billing']['billing_identification_type'] = array(
 		    'label'     => __('Identification Type', 'woocommerce'),
 		    'type'		=> 'select',
 		    'required'  => true,
-		    'class'     => array('form-row-wide', 'billing_id_number'),
+		    'class'     => array('form-row-wide', 'billing_id_type'),
 		    'clear'     => true,
 		    'priority'  => 25,
-		    'options'   => array('id' => "ID Number", 'passport' => 'Passport Number')
+		    'options'   => array('id' => "ID Number", 'passport' => 'Passport Number'),
+		    'default'   => WC()->session->get('carpro_billing_id_type')
 		);
 
 		$_FIELDS['billing']['billing_id_passport'] = array(
@@ -1911,9 +1886,9 @@ class Nextlevel_Carpro_Public {
 		    'required'  => true,
 		    'class'     => array('form-row-wide', 'billing_id_number'),
 		    'clear'     => true,
-		    'priority'  => 26
+		    'priority'  => 26,
+		    'default'   => WC()->session->get('carpro_billing_id_value')
 		);
-
 
 		return $_FIELDS;
 
@@ -2014,9 +1989,9 @@ class Nextlevel_Carpro_Public {
 
 			$_PROD = get_post($_ID);
 
-			if($_PROD->post_type=='product' && !is_admin()):
+			if($_PROD->post_type=='product'):
 
-				$_TITLE = get_field('fallback_name', $_PROD);
+				$_TITLE = get_post_meta($_PROD->ID, 'fallback_name', true);
 
 			endif;
 		}
@@ -2113,7 +2088,7 @@ class Nextlevel_Carpro_Public {
 	/* RENAME ORDERS ON ACCOUNT PAGE */
 	public function woocommerce_account_menu_items($_MENU){
 
-		$_MENU['orders'] = __('Bookings', 'woocommerce');
+		$_MENU['orders'] = __('Rentals', 'woocommerce');
 		return $_MENU;
 	}
 
@@ -2129,6 +2104,80 @@ class Nextlevel_Carpro_Public {
 	/* REMOVE MODEL PERMALINK ON CHECKOUT */
 	public function woocommerce_order_item_permalink($_PERMALINK, $_ITEM, $_ORDER){
 		return false;
+	}
+
+
+
+
+
+
+
+
+
+
+	/* REMOVE FROM CART MESSAGE */
+	public function woocommerce_cart_item_removed_message($_MSG){
+		return false;
+	}
+
+
+
+
+
+
+
+
+
+
+	/* ADUMO - SKIP TO PAYMENT ON RETRY */
+	public function K8_ADUMO_FILTER_RETRY_URL_NEW_CARD($_URL){
+
+		$_URL = trailingslashit(wc_get_checkout_url()).'?checkout_action=pay';
+
+		return $_URL;
+
+	}
+
+
+
+
+
+
+
+
+
+
+	/* Change Make Booking Text */
+	public function woocommerce_order_button_text($_TEXT){
+
+		$_TEXT = 'Confirm Rental';
+
+		return $_TEXT;
+	}
+
+
+
+
+
+
+
+
+
+
+	/* REDIRECT VEHICLES WITH NO INFO */
+	public function template_redirect($_LINKS){
+		
+		if(is_singular('product')):
+
+			$_OBJ = get_queried_object();
+
+			$shop_page_url = get_permalink( wc_get_page_id( 'shop' ) );
+
+			wp_safe_redirect($shop_page_url);
+		
+
+		endif;
+
 	}
 
 

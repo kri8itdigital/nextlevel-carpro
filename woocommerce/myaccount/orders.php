@@ -24,6 +24,7 @@ do_action( 'woocommerce_before_account_orders', $has_orders ); ?>
 <?php if ( $has_orders ) : ?>
 
 	<table class="woocommerce-orders-table woocommerce-MyAccount-orders shop_table shop_table_responsive my_account_orders account-orders-table">
+		
 		<thead>
 			<tr>
 				<?php foreach ( wc_get_account_orders_columns() as $column_id => $column_name ) : ?>
@@ -105,7 +106,7 @@ do_action( 'woocommerce_before_account_orders', $has_orders ); ?>
 
 <?php else : ?>
 	<div class="woocommerce-message woocommerce-message--info woocommerce-Message woocommerce-Message--info woocommerce-info">
-		<?php esc_html_e( 'No bookings have been made yet.', 'woocommerce' ); ?>
+		<?php esc_html_e( 'No rentals have been made yet.', 'woocommerce' ); ?>
 	</div>
 <?php endif; ?>
 

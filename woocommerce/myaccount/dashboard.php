@@ -31,7 +31,7 @@ $allowed_html = array(
 <p>
 	<?php
 	/* translators: 1: Orders URL 2: Address URL 3: Account URL. */
-	$dashboard_desc = __( 'From your account dashboard you can view your <a href="%1$s">recent bookings</a>, manage your <a href="%2$s">billing address</a>, and <a href="%3$s">edit your password and account details</a>.', 'woocommerce' );
+	$dashboard_desc = __( 'From your account dashboard you can view your <a href="%1$s">recent rentals</a>, manage your <a href="%2$s">billing address</a>, and <a href="%3$s">edit your password and account details</a>.', 'woocommerce' );
 
 	printf(
 		wp_kses( $dashboard_desc, $allowed_html ),
